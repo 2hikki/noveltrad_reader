@@ -1,0 +1,23 @@
+{
+  "novelas": [
+    {
+      "slug": "deja-vute-betrayal-begets-new-beginnings",
+      "titulo_es": "Déjà Vute: La traición engendra un nuevo comienzo",
+      "titulo_original": "Déjà Vute Betrayal Begets New Beginnings",
+      "sinopsis": "Freesia Salt es traicionada, despojada de su prometido y envenenada por su manipuladora hermana menor Kalmia, la Santa del reino. En sus momentos finales en un bosque lluvioso, Freesia descubre que es la reencarnación o poseedora del poder de la Bruja del Sol. Tras morir, retrocede dos años en el tiempo. Decidida a alejarse de su familia abusiva y romper su compromiso con Vute Sylphen (a quien cree enamorado de Kalmia), planea ingresar a la Academia Nacional Warden para obtener la beca de graduación e independizarse. Sin embargo, Vute también ha viajado en el tiempo tras encontrar el cuerpo de Freesia en el futuro. Profundamente enamorado de ella, renuncia a su puesto como vicecomandante de los Caballeros Reales y la sigue a la academia para protegerla, desencadenando una serie de malentendidos mientras Freesia intenta salvar a su amiga la princesa Olivia y construir una vida propia.",
+      "tono": "Fantasía romántica con regresión temporal y drama aristocrático. La prosa equilibra la introspección emocional y el trauma de la protagonista frente a la traición con momentos de comedia ligera, equívocos románticos y superación personal.",
+      "portada": "output/novelas/deja-vute-betrayal-begets-new-beginnings/vol-01/portada.jpg",
+      "ultima_actualizacion": "2026-11-24 18:51:31",
+      "volumenes": [
+        {
+          "clave": "vol-01",
+          "numero": 1,
+          "total_capitulos": 27,
+          "fecha_subida": "2026-11-24 18:51:31",
+          "ruta_indice": "output/novelas/deja-vute-betrayal-begets-new-beginnings/vol-01/indice.json",
+          "portada": "output/novelas/deja-vute-betrayal-begets-new-beginnings/vol-01/portada.jpg"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "noticias": [
+    {
+      "fecha": "2026-11-24",
+      "tipo": "Proyecto",
+      "titulo": "¡Lanzamiento de NovelaTrad Reader!",
+      "contenido": "Estrenamos nueva interfaz inspirada en Mihon con Biblioteca personal, Historial, Libreta de citas y soporte PWA offline."
+    }
+  ]
+}

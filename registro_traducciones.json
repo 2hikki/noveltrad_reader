@@ -1,0 +1,17 @@
+{
+  "novelas": {
+    "deja-vute-betrayal-begets-new-beginnings": {
+      "carpeta_origen": "Déjà Vute Betrayal Begets New Beginnings",
+      "titulo_es": "Déjà Vute: La traición engendra un nuevo comienzo",
+      "volumenes": {
+        "vol-01": {
+          "archivo_origen": "Déjà Vute Betrayal Begets New Beginnings Volume 1.epub",
+          "hash_sha256": "1f6ad863cbf667a345581f3114f243a0cfbd5bc56a3e9471a7ab5a41a4445aec",
+          "total_capitulos": 27,
+          "estado": "completado",
+          "fecha_completado": "2026-11-24 18:51:31"
+        }
+      }
+    }
+  }
+}

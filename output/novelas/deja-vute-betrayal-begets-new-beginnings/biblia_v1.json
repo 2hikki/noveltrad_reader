@@ -1,0 +1,132 @@
+{
+  "titulo_original": "Déjà Vute: Betrayal Begets New Beginnings",
+  "titulo_es": "Déjà Vute: La traición engendra un nuevo comienzo",
+  "tono_narrativo": "Fantasía romántica con regresión temporal y drama aristocrático. La prosa equilibra la introspección emocional y el trauma de la protagonista frente a la traición con momentos de comedia ligera, equívocos románticos y superación personal.",
+  "resumen_trama": "Freesia Salt es traicionada, despojada de su prometido y envenenada por su manipuladora hermana menor Kalmia, la Santa del reino. En sus momentos finales en un bosque lluvioso, Freesia descubre que es la reencarnación o poseedora del poder de la Bruja del Sol. Tras morir, retrocede dos años en el tiempo. Decidida a alejarse de su familia abusiva y romper su compromiso con Vute Sylphen (a quien cree enamorado de Kalmia), planea ingresar a la Academia Nacional Warden para obtener la beca de graduación e independizarse. Sin embargo, Vute también ha viajado en el tiempo tras encontrar el cuerpo de Freesia en el futuro. Profundamente enamorado de ella, renuncia a su puesto como vicecomandante de los Caballeros Reales y la sigue a la academia para protegerla, desencadenando una serie de malentendidos mientras Freesia intenta salvar a su amiga la princesa Olivia y construir una vida propia.",
+  "personajes": [
+    {
+      "nombre": "Freesia Salt",
+      "genero_gramatical": "Femenino",
+      "rol_y_edad": "Protagonista y narradora en primera persona ('yo'). Hija mayor del duque Salt. Tiene 16 años tras el viaje en el tiempo (18 al morir).",
+      "registro_habla": "Formal y refinado en público; analítico, decidido y profundamente introspectivo en su monólogo interno.",
+      "tratamiento_con_otros": "Trata de 'tú' a su amiga Olivia. Intenta mantener distancia y formalidad (usted) con Vute, aunque este le exige tuteo. Trata de 'usted' a sus padres y abuela.",
+      "tics_y_estilo": "Tiende a asumir lo peor de sus perspectivas románticas por trauma previo; apasionada en secreto por la investigación, mapas, crestas mágicas y botánica."
+    },
+    {
+      "nombre": "Vute Sylphen",
+      "genero_gramatical": "Masculino",
+      "rol_y_edad": "Co-protagonista. Heredero de la casa ducal Sylphen y ex-vicecomandante de los Caballeros Reales. Tiene 18 años tras el viaje en el tiempo (20 al morir en la línea previa).",
+      "registro_habla": "Caballeroso, refinado y extremadamente afectuoso con Freesia; frío, cortante e imponente ante Kalmia y enemigos.",
+      "tratamiento_con_otros": "Llama a Freesia 'Free' y le exige hablarle de 'tú' sin honoríficos. Mantiene trato aristocrático o militar con los demás.",
+      "tics_y_estilo": "Se sonroja con facilidad ante los cumplidos de Freesia; cocina y prepara picnics para ella; posee un aura mágica intimidante cuando la protege."
+    },
+    {
+      "nombre": "Kalmia Salt",
+      "genero_gramatical": "Femenino",
+      "rol_y_edad": "Antagonista principal. Hermana menor de Freesia (15 años tras el viaje en el tiempo). Santa oficial del reino.",
+      "registro_habla": "Falsamente dulce, infantil y manipulador en público; caprichoso, vanidoso y cruel en privado.",
+      "tratamiento_con_otros": "Usa coquetería con hombres nobles; trata a Freesia como a una sirvienta prescindible mientras simula quererla ante el público.",
+      "tics_y_estilo": "Enrosca su cinta azul claro en el dedo; usa llanto falso ('tee-hee') y dramatismo victimista para manipular a la sociedad."
+    },
+    {
+      "nombre": "Olivia Warden",
+      "genero_gramatical": "Femenino",
+      "rol_y_edad": "Primera Princesa del Reino de Warden. Mejor amiga de la infancia de Freesia (16 años).",
+      "registro_habla": "Desenfadado, desenfadado y coloquial en privado (tú); augusto y aristocrático en eventos oficiales.",
+      "tratamiento_con_otros": "Trata a Freesia de 'tú' y con motes afectuosos ('Free'); se burla amablemente de las torpezas románticas de Vute.",
+      "tics_y_estilo": "Se oculta tras su abanico con risa pícara ('ohoho'); en privado se descalza y relaja por completo."
+    },
+    {
+      "nombre": "Maclen Welder",
+      "genero_gramatical": "Masculino",
+      "rol_y_edad": "Estudiante de intercambio común en la academia (en realidad Maximilian Smilia Windbul, segundo príncipe de Windbul). Amigo de Freesia y Olivia.",
+      "registro_habla": "Entusiasta, educado y accesible.",
+      "tratamiento_con_otros": "Trata a Vute con admiración desbordante (fanático de sus hazañas); amigable de 'tú' con Freesia y Olivia.",
+      "tics_y_estilo": "Recorta y colecciona artículos de periódico sobre los caballeros; apasionado por los viajes y paisajes del mundo."
+    },
+    {
+      "nombre": "Magnolia Salt",
+      "genero_gramatical": "Femenino",
+      "rol_y_edad": "Abuela de Freesia y Kalmia. Antigua Santa del reino.",
+      "registro_habla": "Estricto, frío, directo y autoritario.",
+      "tratamiento_con_otros": "Formal y distante con Freesia; respetuosa con la familia real y la casa Sylphen.",
+      "tics_y_estilo": "Exigente al impartir lecciones de magia, astronomía y geopolítica; severa e inexpresiva."
+    },
+    {
+      "nombre": "Duke Salt",
+      "genero_gramatical": "Masculino",
+      "rol_y_edad": "Padre de Freesia y Kalmia. Cabeza de la Casa Ducal Salt.",
+      "registro_habla": "Autoritario, hosco y propenso a arrebatos de ira.",
+      "tratamiento_con_otros": "Trata a Freesia con desdén y crueldad verbal/física; adula y consiente desmedidamente a Kalmia.",
+      "tics_y_estilo": "Obsesionado con el beneficio económico de la casa y el prestigio del título de Santa de su hija menor."
+    }
+  ],
+  "glosario": [
+    {
+      "termino_en": "Sun Witch",
+      "traduccion_es": "Bruja del Sol",
+      "categoria": "Título",
+      "nota_contexto": "Figura legendaria que salvó al mundo del miasma purificando la tierra tras el secuestro de la diosa Diete."
+    },
+    {
+      "termino_en": "Saint",
+      "traduccion_es": "Santa",
+      "categoria": "Título",
+      "nota_contexto": "Título otorgado a las jóvenes con capacidad de canalizar la magia de purificación y bendición de la diosa Diete."
+    },
+    {
+      "termino_en": "Warden National Academy",
+      "traduccion_es": "Academia Nacional Warden",
+      "categoria": "Lugar",
+      "nota_contexto": "Prestigiosa institución académica que acepta tanto a nobles como a plebeyos capacitados mediante becas."
+    },
+    {
+      "termino_en": "House of Salt",
+      "traduccion_es": "Casa Ducal Salt",
+      "categoria": "Organización",
+      "nota_contexto": "Familia ducal especializada en el procesamiento de gemas y joyería comercial."
+    },
+    {
+      "termino_en": "House of Sylphen",
+      "traduccion_es": "Casa Ducal Sylphen",
+      "categoria": "Organización",
+      "nota_contexto": "Familia ducal propietaria de minas de diamantes con gran poder financiero y militar."
+    },
+    {
+      "termino_en": "Diete",
+      "traduccion_es": "Diete",
+      "categoria": "Magia/Habilidad",
+      "nota_contexto": "Diosa del Sol venerada en el reino y el continente."
+    },
+    {
+      "termino_en": "Holy Sword",
+      "traduccion_es": "Espada Sagrada",
+      "categoria": "Objeto",
+      "nota_contexto": "Arma legendaria elegida solo por el Héroe verdadero tras derrotar al Dragón Demonio."
+    },
+    {
+      "termino_en": "Royal Knights",
+      "traduccion_es": "Caballeros Reales",
+      "categoria": "Organización",
+      "nota_contexto": "Orden militar principal encargada de la defensa del reino y la subyugación de monstruos."
+    },
+    {
+      "termino_en": "Crest of Protection",
+      "traduccion_es": "Cresta de Protección",
+      "categoria": "Magia/Habilidad",
+      "nota_contexto": "Patrón mágico antiguo bordado o grabado que otorga protección o canaliza magia divina."
+    },
+    {
+      "termino_en": "Flororo bird",
+      "traduccion_es": "ave flororo",
+      "categoria": "Objeto",
+      "nota_contexto": "Ave carnívora gigante y veloz cuya carne es considerada un manjar exótico de gran lujo."
+    },
+    {
+      "termino_en": "Lenny",
+      "traduccion_es": "lenny",
+      "categoria": "Objeto",
+      "nota_contexto": "Unidad monetaria del Reino de Warden."
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "slug": "deja-vute-betrayal-begets-new-beginnings",
+  "volumen": 1,
+  "titulo_novela": "Déjà Vute: La traición engendra un nuevo comienzo",
+  "capitulos": [
+    {
+      "numero": 1,
+      "titulo": "Prólogo: Descubriendo la traición",
+      "archivo": "cap-01.json"
+    },
+    {
+      "numero": 2,
+      "titulo": "El regreso",
+      "archivo": "cap-02.json"
+    },
+    {
+      "numero": 3,
+      "titulo": "Una segunda oportunidad y una determinación firme",
+      "archivo": "cap-03.json"
+    },
+    {
+      "numero": 4,
+      "titulo": "El regalo que nunca llegó",
+      "archivo": "cap-04.json"
+    },
+    {
+      "numero": 5,
+      "titulo": "Nuevas determinaciones",
+      "archivo": "cap-05.json"
+    },
+    {
+      "numero": 6,
+      "titulo": "Capítulo 3: El regreso del héroe",
+      "archivo": "cap-06.json"
+    },
+    {
+      "numero": 7,
+      "titulo": "Capítulo 4: Descubriendo la traición (Perspectiva de Vute)",
+      "archivo": "cap-07.json"
+    },
+    {
+      "numero": 8,
+      "titulo": "El regreso (Punto de vista de Vute)",
+      "archivo": "cap-08.json"
+    },
+    {
+      "numero": 9,
+      "titulo": "Capítulo 9: El pañuelo del desengaño y el destello de la regresión",
+      "archivo": "cap-09.json"
+    },
+    {
+      "numero": 10,
+      "titulo": "Recuerdos perdidos",
+      "archivo": "cap-10.json"
+    },
+    {
+      "numero": 11,
+      "titulo": "La residencia Sylphen",
+      "archivo": "cap-11.json"
+    },
+    {
+      "numero": 12,
+      "titulo": "La distancia entre nosotros",
+      "archivo": "cap-12.json"
+    },
+    {
+      "numero": 13,
+      "titulo": "El origen de una determinación",
+      "archivo": "cap-13.json"
+    },
+    {
+      "numero": 14,
+      "titulo": "Capítulo 9: Una cercanía inquebrantable",
+      "archivo": "cap-14.json"
+    },
+    {
+      "numero": 15,
+      "titulo": "Capítulo 10: El anillo de compromiso",
+      "archivo": "cap-15.json"
+    },
+    {
+      "numero": 16,
+      "titulo": "El ritual sagrado de Kalmia",
+      "archivo": "cap-16.json"
+    },
+    {
+      "numero": 17,
+      "titulo": "El miedo del Héroe",
+      "archivo": "cap-17.json"
+    },
+    {
+      "numero": 18,
+      "titulo": "Un encuentro en la Academia",
+      "archivo": "cap-18.json"
+    },
+    {
+      "numero": 19,
+      "titulo": "Freesia baja la guardia",
+      "archivo": "cap-19.json"
+    },
+    {
+      "numero": 20,
+      "titulo": "La arrogancia de Kalmia",
+      "archivo": "cap-20.json"
+    },
+    {
+      "numero": 21,
+      "titulo": "Observando el ritual sagrado",
+      "archivo": "cap-21.json"
+    },
+    {
+      "numero": 22,
+      "titulo": "Capítulo 22: La Bendición de la Diosa",
+      "archivo": "cap-22.json"
+    },
+    {
+      "numero": 23,
+      "titulo": "La furia de un padre",
+      "archivo": "cap-23.json"
+    },
+    {
+      "numero": 24,
+      "titulo": "El error de cálculo de Kalmia",
+      "archivo": "cap-24.json"
+    },
+    {
+      "numero": 25,
+      "titulo": "Historia lateral: Kalmia se enamora",
+      "archivo": "cap-25.json"
+    },
+    {
+      "numero": 26,
+      "titulo": "Historia secundaria: Vute sienta las bases",
+      "archivo": "cap-26.json"
+    },
+    {
+      "numero": 27,
+      "titulo": "Créditos",
+      "archivo": "cap-27.json"
+    }
+  ]
+}
