@@ -177,6 +177,12 @@ window.aplicarGradientePortada = function (imgUrl) {
   const activo = window.esMecenas && typeof prefs !== "undefined" && prefs.chameleonGrad;
   if (!activo) {
     document.body.classList.remove("chameleon-active");
+    document.body.style.background = "";
+    if (typeof aplicarPreferencias === "function" && !window._enAplicarPrefs) {
+      window._enAplicarPrefs = true;
+      aplicarPreferencias();
+      window._enAplicarPrefs = false;
+    }
     return;
   }
 

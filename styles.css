@@ -1145,3 +1145,21 @@ body.chameleon-active main {
 .reader-body p {
   font-family: var(--font-family) !important;
 }
+
+
+/* === ADAPTACIÓN COMPLETA DE VARIABLES CUANDO CAMALEÓN ESTÁ ACTIVO === */
+body.chameleon-active {
+  --surface: rgba(255, 255, 255, 0.08) !important;
+  --surface-high: rgba(255, 255, 255, 0.14) !important;
+  --text: #f8fafc !important;
+  --muted: #cbd5e1 !important;
+  --border: rgba(255, 255, 255, 0.16) !important;
+}
+body.chameleon-active #novel-header,
+body.chameleon-active .vol-box,
+body.chameleon-active .m3-topbar,
+body.chameleon-active .m3-bottomnav {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  backdrop-filter: blur(12px);
+}
