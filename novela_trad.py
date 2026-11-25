@@ -1,7 +1,8 @@
-import os
+﻿import os
 import re
 import json
 import time
+import argparse
 import hashlib
 import unicodedata
 from datetime import datetime
@@ -40,6 +41,7 @@ MODELOS_CASCADA = [
 ]
 
 MODELOS_DESHABILITADOS = set()
+
 
 def llamar_gemini_con_respaldo(contents, config: types.GenerateContentConfig) -> tuple[str, str]:
     """
@@ -87,6 +89,7 @@ def llamar_gemini_con_respaldo(contents, config: types.GenerateContentConfig) ->
 
     raise RuntimeError("Se agotaron los reintentos de la bomba de modelos.")
 
+
 # ==========================================
 # 1. ESQUEMAS DE DATOS (CONTRATO CON LA WEB)
 # ==========================================
@@ -99,11 +102,13 @@ class FichaPersonaje(BaseModel):
     tratamiento_con_otros: str = Field(description="A quién trata de 'tú' y a quién de 'usted'. Indicar si conserva honoríficos (-san, -sama, senpai)")
     tics_y_estilo: str = Field(description="Muletillas o forma particular de expresarse")
 
+
 class TerminoGlosario(BaseModel):
     termino_en: str
     traduccion_es: str
     categoria: str = Field(description="Lugar, Magia/Habilidad, Objeto, Título o Organización")
     nota_contexto: str
+
 
 class BibliaVolumen(BaseModel):
     titulo_original: str
@@ -113,11 +118,13 @@ class BibliaVolumen(BaseModel):
     personajes: list[FichaPersonaje]
     glosario: list[TerminoGlosario]
 
+
 class CapituloTraducido(BaseModel):
     numero: int
     titulo_es: str = Field(description="Título del capítulo traducido de forma natural y literaria")
     parrafos: list[str] = Field(description="Lista exacta de párrafos traducidos al español neutro/literario")
     notas_traductor: list[str] = Field(description="Notas culturales breves opcionales (máximo 2 por capítulo)")
+
 
 # ==========================================
 # 2. UTILIDADES DE CARPETAS Y REGISTRO
@@ -130,17 +137,19 @@ def normalizar_slug(nombre: str) -> str:
     slug = re.sub(r'[^a-z0-9-]+', '-', texto_sin_acentos).strip('-')
     return slug or "novela-sin-titulo"
 
+
 def detectar_numero_volumen(nombre_archivo: str, indice_fallback: int) -> int:
     base = os.path.splitext(nombre_archivo)[0]
     match_explicito = re.search(r'(?:v|vol|volumen|book|tomo)[\s._-]*0*(\d+)', base, re.IGNORECASE)
     if match_explicito:
         return int(match_explicito.group(1))
-    
+
     match_numero = re.search(r'0*(\d+)', base)
     if match_numero:
         return int(match_numero.group(1))
-        
+
     return indice_fallback
+
 
 def calcular_hash_archivo(ruta_archivo: str) -> str:
     sha256 = hashlib.sha256()
@@ -149,15 +158,18 @@ def calcular_hash_archivo(ruta_archivo: str) -> str:
             sha256.update(bloque)
     return sha256.hexdigest()
 
+
 def cargar_registro() -> dict:
     if os.path.exists(RUTA_REGISTRO):
         with open(RUTA_REGISTRO, "r", encoding="utf-8") as f:
             return json.load(f)
     return {"novelas": {}}
 
+
 def guardar_registro(registro: dict):
     with open(RUTA_REGISTRO, "w", encoding="utf-8") as f:
         json.dump(registro, f, ensure_ascii=False, indent=2)
+
 
 # ==========================================
 # 3. FASE 1: PRE-LECTURA Y BIBLIA ACUMULATIVA
@@ -183,7 +195,11 @@ def generar_o_cargar_biblia(capitulos: list[dict], ruta_biblia: str, ruta_biblia
     print("  [FASE 1] Analizando volumen completo para generar Biblia de Traducción...")
     texto_volumen = ""
     for cap in capitulos:
-        texto_volumen += f"\n--- CAPÍTULO {cap['numero']} ---\n" + "\n".join(cap["parrafos"])
+        parrafos_sin_img = [
+            p for p in cap["parrafos"]
+            if not (isinstance(p, str) and p.strip().startswith("[img:"))
+        ]
+        texto_volumen += f"\n--- CAPÍTULO {cap['numero']} ---\n" + "\n".join(parrafos_sin_img)
 
     prompt_analisis = (
         "Eres un editor jefe y traductor literario experto de inglés a español, especializado en novelas ligeras japonesas. "
@@ -209,6 +225,7 @@ def generar_o_cargar_biblia(capitulos: list[dict], ruta_biblia: str, ruta_biblia
     print(f"  [FASE 1] Biblia guardada en {ruta_biblia} (vía {modelo_usado})")
     return biblia_dict
 
+
 # ==========================================
 # 4. FASE 2: TRADUCCIÓN CONTEXTUALIZADA
 # ==========================================
@@ -231,7 +248,38 @@ def dividir_en_lotes(parrafos: list[str], max_caracteres: int = 8500) -> list[li
         lotes.append(lote_actual)
     return lotes
 
-def procesar_volumen(ruta_archivo: str, nombre_carpeta: str, slug_novela: str, num_volumen: int, registro: dict):
+
+def restaurar_marcadores_imagen(lote_original: list[str], parrafos_traducidos: list[str]) -> list[str]:
+    """Garantiza que ninguna etiqueta [img: ...] original se pierda ni sea alterada."""
+    imgs_originales = [
+        p.strip() for p in lote_original
+        if isinstance(p, str) and p.strip().startswith("[img:")
+    ]
+    if not imgs_originales:
+        return parrafos_traducidos
+
+    # Eliminar posibles versiones deformadas o duplicadas y reinsertar en posición proporcional exacta
+    limpios = [
+        p for p in parrafos_traducidos
+        if not (isinstance(p, str) and p.strip().startswith("[img:"))
+    ]
+    total_orig = max(1, len(lote_original))
+    for idx_orig, p in enumerate(lote_original):
+        if isinstance(p, str) and p.strip().startswith("[img:"):
+            pos_rel = idx_orig / total_orig
+            pos_dest = min(len(limpios), round(pos_rel * len(limpios)))
+            limpios.insert(pos_dest, p.strip())
+    return limpios
+
+
+def procesar_volumen(
+    ruta_archivo: str,
+    nombre_carpeta: str,
+    slug_novela: str,
+    num_volumen: int,
+    registro: dict,
+    forzar: bool = False,
+) -> bool:
     nombre_archivo = os.path.basename(ruta_archivo)
     file_hash = calcular_hash_archivo(ruta_archivo)
     clave_vol = f"vol-{num_volumen:02d}"
@@ -248,16 +296,19 @@ def procesar_volumen(ruta_archivo: str, nombre_carpeta: str, slug_novela: str, n
     ruta_indice = os.path.join(carpeta_vol_out, "indice.json")
 
     vol_reg = registro["novelas"][slug_novela]["volumenes"].get(clave_vol)
-    if vol_reg and vol_reg.get("estado") == "completado" and os.path.exists(ruta_indice):
+    if not forzar and vol_reg and vol_reg.get("estado") == "completado" and os.path.exists(ruta_indice):
         if vol_reg.get("hash_sha256") == file_hash:
             print(f"  [OMITIDO] {clave_vol} ('{nombre_archivo}') ya fue traducido.")
-            return
+            return False
 
     print(f"\n  >>> TRADUCIENDO: {nombre_carpeta} | {clave_vol} ({nombre_archivo})")
     os.makedirs(carpeta_vol_out, exist_ok=True)
     extraer_portada_epub(ruta_archivo, carpeta_vol_out)
 
     capitulos = extraer_capitulos(ruta_archivo)
+    if not capitulos:
+        print(f"  [!] No se extrajeron capítulos válidos de '{nombre_archivo}'.")
+        return False
     print(f"  Se extrajeron {len(capitulos)} capítulos/bloques.")
 
     ruta_biblia = os.path.join(carpeta_novela_out, f"biblia_v{num_volumen}.json")
@@ -267,7 +318,6 @@ def procesar_volumen(ruta_archivo: str, nombre_carpeta: str, slug_novela: str, n
     )
     biblia = generar_o_cargar_biblia(capitulos, ruta_biblia, ruta_biblia_previa)
 
-    # Compactación de Biblia para ahorrar tokens TPM por cada lote
     biblia_compacta = {
         "titulo": biblia["titulo_es"],
         "tono": biblia["tono_narrativo"],
@@ -288,7 +338,8 @@ def procesar_volumen(ruta_archivo: str, nombre_carpeta: str, slug_novela: str, n
         "2. Evita calcos del inglés (anglicismos sintácticos): omite pronombres sujeto innecesarios (usa sujeto tácito natural en español) y adapta modismos ingleses a español literario fluido.\n"
         "3. Usa raya española (—) para los diálogos e incisos del narrador (ej: —No lo sé —respondió él—. Pero lo averiguaremos).\n"
         "4. Conserva las marcas de cursiva (*texto*) para pensamientos internos y los separadores (* * *).\n"
-        "5. No resumas ni omitas ninguna línea."
+        "5. Conserva intactos y sin traducir los marcadores de ilustración tipo [img: ...] exactamente como aparecen.\n"
+        "6. No resumas ni omitas ninguna línea."
     )
 
     config_traduccion = types.GenerateContentConfig(
@@ -305,17 +356,21 @@ def procesar_volumen(ruta_archivo: str, nombre_carpeta: str, slug_novela: str, n
         num_cap = cap["numero"]
         ruta_cap_salida = os.path.join(carpeta_vol_out, f"cap-{num_cap:02d}.json")
 
-        if os.path.exists(ruta_cap_salida):
-            print(f"  [FASE 2] Capítulo {num_cap:02d} ya existe. Saltando...")
-            with open(ruta_cap_salida, "r", encoding="utf-8") as f:
-                datos_existentes = json.load(f)
-                ultimos_parrafos_previos = datos_existentes["parrafos"][-3:]
-                indice_web.append({
-                    "numero": num_cap,
-                    "titulo": datos_existentes["titulo_es"],
-                    "archivo": f"cap-{num_cap:02d}.json"
-                })
-            continue
+        if not forzar and os.path.exists(ruta_cap_salida):
+            try:
+                with open(ruta_cap_salida, "r", encoding="utf-8") as f:
+                    datos_existentes = json.load(f)
+                if isinstance(datos_existentes.get("parrafos"), list) and datos_existentes["parrafos"]:
+                    print(f"  [FASE 2] Capítulo {num_cap:02d} ya existe. Saltando...")
+                    ultimos_parrafos_previos = datos_existentes["parrafos"][-3:]
+                    indice_web.append({
+                        "numero": num_cap,
+                        "titulo": datos_existentes.get("titulo_es", f"Capítulo {num_cap}"),
+                        "archivo": f"cap-{num_cap:02d}.json"
+                    })
+                    continue
+            except Exception:
+                print(f"  [!] cap-{num_cap:02d}.json estaba dañado; se regenerará.")
 
         print(f"  [FASE 2] Traduciendo Capítulo {num_cap:02d} ({len(cap['parrafos'])} párrafos)...")
         lotes = dividir_en_lotes(cap["parrafos"], max_caracteres=8500)
@@ -343,11 +398,16 @@ def procesar_volumen(ruta_archivo: str, nombre_carpeta: str, slug_novela: str, n
             resultado_lote = json.loads(texto_lote)
 
             if idx_lote == 0:
-                titulo_es_cap = resultado_lote["titulo_es"]
+                titulo_es_cap = resultado_lote.get("titulo_es") or f"Capítulo {num_cap}"
 
-            parrafos_traducidos_cap.extend(resultado_lote["parrafos"])
+            parrafos_lote = resultado_lote.get("parrafos") or []
+            if not parrafos_lote:
+                raise RuntimeError(f"El modelo devolvió 'parrafos' vacío en cap-{num_cap:02d}, lote {idx_lote + 1}.")
+
+            parrafos_lote = restaurar_marcadores_imagen(lote, parrafos_lote)
+            parrafos_traducidos_cap.extend(parrafos_lote)
             notas_cap.extend(resultado_lote.get("notas_traductor", []))
-            ultimos_parrafos_previos = resultado_lote["parrafos"][-3:]
+            ultimos_parrafos_previos = [p for p in parrafos_lote if not p.startswith("[img:")][-3:]
 
             time.sleep(DELAY_ENTRE_LOTES)
 
@@ -385,12 +445,13 @@ def procesar_volumen(ruta_archivo: str, nombre_carpeta: str, slug_novela: str, n
     }
     guardar_registro(registro)
     print(f"  [COMPLETADO] {nombre_carpeta} -> {clave_vol} listo.\n")
+    return True
 
-def escanear_biblioteca_input():
-    carpeta_input = "input"
+
+def escanear_biblioteca_input(carpeta_input: str = "input", filtro_slug: str = None, forzar: bool = False):
     if not os.path.exists(carpeta_input):
         os.makedirs(carpeta_input)
-        print("Carpeta 'input/' creada. Crea una subcarpeta con el nombre de cada novela dentro.")
+        print(f"Carpeta '{carpeta_input}/' creada. Crea una subcarpeta con el nombre de cada novela dentro.")
         return
 
     subcarpetas = [
@@ -399,14 +460,18 @@ def escanear_biblioteca_input():
     ]
 
     if not subcarpetas:
-        print("No hay carpetas de novelas dentro de 'input/'. Ejemplo: input/Mi Novela/vol1.epub")
+        print(f"No hay carpetas de novelas dentro de '{carpeta_input}/'. Ejemplo: {carpeta_input}/Mi Novela/vol1.epub")
         return
 
     registro = cargar_registro()
+    novelas_procesadas = []
 
     for nombre_carpeta in subcarpetas:
         ruta_novela = os.path.join(carpeta_input, nombre_carpeta)
         slug_novela = normalizar_slug(nombre_carpeta)
+
+        if filtro_slug and filtro_slug != slug_novela:
+            continue
 
         archivos = [
             f for f in sorted(os.listdir(ruta_novela))
@@ -417,10 +482,26 @@ def escanear_biblioteca_input():
             continue
 
         print(f"=== Revisando novela: '{nombre_carpeta}' (slug: {slug_novela}) ===")
+        hubo_cambios = False
         for idx, archivo in enumerate(archivos, start=1):
             num_vol = detectar_numero_volumen(archivo, idx)
             ruta_archivo = os.path.join(ruta_novela, archivo)
-            procesar_volumen(ruta_archivo, nombre_carpeta, slug_novela, num_vol, registro)
+            if procesar_volumen(ruta_archivo, nombre_carpeta, slug_novela, num_vol, registro, forzar=forzar):
+                hubo_cambios = True
+        if hubo_cambios:
+            novelas_procesadas.append(slug_novela)
+
+    if novelas_procesadas:
+        print("=== Siguiente paso sugerido ===")
+        for sl in novelas_procesadas:
+            print(f"  python ingresar_novela_repo.py --slug \"{sl}\"")
+
 
 if __name__ == "__main__":
-    escanear_biblioteca_input()
+    parser = argparse.ArgumentParser(description="Traduce novelas desde input/ generando biblia y JSONs para la web.")
+    parser.add_argument("--input-dir", default="input", help="Carpeta de entrada (por defecto: input)")
+    parser.add_argument("--slug", default=None, help="Procesar únicamente la novela cuyo slug coincida")
+    parser.add_argument("--forzar", action="store_true", help="Reprocesar volúmenes/capítulos aunque ya figuren completados")
+    args = parser.parse_args()
+
+    escanear_biblioteca_input(carpeta_input=args.input_dir, filtro_slug=args.slug, forzar=args.forzar)
