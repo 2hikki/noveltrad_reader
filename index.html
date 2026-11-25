@@ -194,17 +194,24 @@
       <div class="more-hero">
         <div class="more-emblem" aria-label="Logo NovelaTrad">
           <svg viewBox="0 0 64 64" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Páginas abiertas -->
             <path d="M32 18C26 14 16 13 10 15V47C16 45 26 46 32 50C38 46 48 45 54 47V15C48 13 38 14 32 18Z" fill="var(--surface-high)" stroke="var(--accent)" stroke-width="3.2" stroke-linejoin="round"/>
-            <!-- Lomo central -->
             <path d="M32 18V50" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
-            <!-- Marcapáginas / Destello de traducción -->
             <path d="M41 14V29L44.5 26L48 29V14" fill="var(--accent)"/>
             <path d="M19 25H26M19 32H25M19 39H24" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
           </svg>
         </div>
         <div class="more-brand-sub">NovelaTrad Reader</div>
       </div>
+
+      <div class="more-list">
+        <div class="more-item toggle-row" onclick="toggleIncognito()">
+          <div class="more-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="15" r="3"/><circle cx="17" cy="15" r="3"/><path d="M10 15h4M3 11l3-5h12l3 5"/></svg>
+          </div>
+          <div class="more-text">
+            <div class="more-title">Modo incógnito</div>
+            <div class="more-desc">Pausa el historial de lectura</div>
+          </div>
           <label class="m3-switch" onclick="event.stopPropagation()">
             <input type="checkbox" id="chk-incognito" onchange="toggleIncognito(this.checked)" />
             <span class="m3-slider"></span>
