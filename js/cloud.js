@@ -63,7 +63,7 @@ async function guardarEnNubeAhora() {
   const ref = doc(db, "users", window.usuarioNube.uid);
   try {
     await setDoc(ref, {
-      email: window.usuarioNube.email || "",
+      email: (window.usuarioNube.email || "").trim().toLowerCase(),
       displayName: window.usuarioNube.displayName || "Lector",
       updatedAt: Date.now(),
       syncData: recolectarEstadoLocal()
@@ -142,6 +142,13 @@ function actualizarInterfazCuenta() {
     document.getElementById("btn-sync-now").onclick = () => guardarEnNubeAhora();
     document.getElementById("btn-google-logout").onclick = () => signOut(auth);
   }
+
+  
+  document.querySelectorAll('a[href*="ko-fi.com/kagamineakira"]').forEach(a => {
+    a.href = window.usuarioNube
+      ? `https://ko-fi.com/kagamineakira?message=${encodeURIComponent("ID Lector: " + window.usuarioNube.uid)}`
+      : "https://ko-fi.com/kagamineakira";
+  });
 
   actualizarVentajasMecenasUI();
 }
