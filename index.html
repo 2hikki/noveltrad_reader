@@ -95,6 +95,22 @@
         <button class="mecenas-only-opt" data-theme-val="antique" style="background:#efe3c8;color:#3b2b18">★ Antiguo</button>
         <button class="mecenas-only-opt" data-theme-val="cyber" style="background:#0d0b1a;color:#a78bfa">★ Cyber</button>
       </div>
+      <div class="mecenas-appearance-box" style="margin-top:0.75rem; padding:0.75rem; border-radius:14px; background:var(--bg); border:1px solid var(--border);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; gap:0.5rem; flex-wrap:wrap;">
+          <span style="font-size:0.8rem; font-weight:700; color:var(--accent);">★ Gradientes y Dinámico (Mecenas)</span>
+          <label style="display:flex; align-items:center; gap:0.35rem; font-size:0.78rem; cursor:pointer; color:var(--text);">
+            <input type="checkbox" id="chk-dynamic-cover-grad" class="mecenas-only-opt" />
+            <span>Camaleón (Portada/Vol)</span>
+          </label>
+        </div>
+        <div class="theme-grid" id="gradient-grid">
+          <button type="button" class="mecenas-only-opt" data-theme-val="grad-aurora" style="background:linear-gradient(135deg,#0f292e,#1e1b4b);color:#a5f3fc">★ Aurora</button>
+          <button type="button" class="mecenas-only-opt" data-theme-val="grad-sunset" style="background:linear-gradient(135deg,#2e141d,#3b1d14);color:#fed7aa">★ Tokio</button>
+          <button type="button" class="mecenas-only-opt" data-theme-val="grad-abyss" style="background:linear-gradient(135deg,#090d1c,#172554);color:#bfdbfe">★ Abismo</button>
+          <button type="button" class="mecenas-only-opt" data-theme-val="grad-forest" style="background:linear-gradient(135deg,#0d2118,#1a2e22);color:#bbf7d0">★ Niebla</button>
+          <button type="button" class="mecenas-only-opt" data-theme-val="grad-quantum" style="background:linear-gradient(135deg,#24102e,#161336);color:#f5d0fe">★ Cuántico</button>
+        </div>
+      </div>
       <div class="rgb-custom-row">
         <label for="custom-bg-picker" style="margin:0; flex:1;">Fondo RGB personalizado</label>
         <span id="lbl-custom-hex" class="rgb-hex-tag">#16131D</span>
@@ -103,13 +119,44 @@
     </div>
     <div class="setting-group">
       <label>Tipografía</label>
-      <select id="font-family-select" class="m3-input">
-        <option value="'Lora', Georgia, serif">Lora (Literaria)</option>
-        <option value="'Merriweather', Georgia, serif">Merriweather (Editorial)</option>
-        <option value="Georgia, 'Times New Roman', serif">Georgia (Clásica)</option>
-        <option value="'Inter', system-ui, sans-serif">Inter (Moderna Sans)</option>
-        <option value="'Verdana', 'Geneva', sans-serif">Verdana (Alta legibilidad)</option>
-      </select>
+      <div id="font-live-preview" class="font-preview-box">
+          <div class="font-preview-tag">Vista previa en vivo</div>
+          <p>«Bajo el cielo violeta de media noche, las páginas cobraron vida propia entre sus dedos.»</p>
+        </div>
+        <div id="font-cards-grid" class="font-cards-grid">
+          <button type="button" class="font-card-btn" data-font-val="'Lora', Georgia, serif" style="font-family:'Lora', Georgia, serif;">
+            <span class="fc-sample">Aa</span>
+            <div class="fc-meta"><strong>Lora</strong><small>Literaria</small></div>
+          </button>
+          <button type="button" class="font-card-btn" data-font-val="'Merriweather', Georgia, serif" style="font-family:'Merriweather', Georgia, serif;">
+            <span class="fc-sample">Aa</span>
+            <div class="fc-meta"><strong>Merriweather</strong><small>Editorial</small></div>
+          </button>
+          <button type="button" class="font-card-btn" data-font-val="Georgia, serif" style="font-family:Georgia, serif;">
+            <span class="fc-sample">Aa</span>
+            <div class="fc-meta"><strong>Georgia</strong><small>Clásica</small></div>
+          </button>
+          <button type="button" class="font-card-btn" data-font-val="'Inter', system-ui, sans-serif" style="font-family:'Inter', system-ui, sans-serif;">
+            <span class="fc-sample">Aa</span>
+            <div class="fc-meta"><strong>Inter</strong><small>Moderna Sans</small></div>
+          </button>
+          <button type="button" class="font-card-btn" data-font-val="Verdana, sans-serif" style="font-family:Verdana, sans-serif;">
+            <span class="fc-sample">Aa</span>
+            <div class="fc-meta"><strong>Verdana</strong><small>Legibilidad</small></div>
+          </button>
+          <button type="button" class="font-card-btn mecenas-only-opt" data-font-val="'Literata', Georgia, serif" style="font-family:'Literata', Georgia, serif;">
+            <span class="fc-sample">Aa</span>
+            <div class="fc-meta"><strong>★ Literata</strong><small>E-Book Pro</small></div>
+          </button>
+          <button type="button" class="font-card-btn mecenas-only-opt" data-font-val="'Crimson Pro', Georgia, serif" style="font-family:'Crimson Pro', Georgia, serif;">
+            <span class="fc-sample">Aa</span>
+            <div class="fc-meta"><strong>★ Crimson Pro</strong><small>Novela Clásica</small></div>
+          </button>
+          <button type="button" class="font-card-btn mecenas-only-opt" data-font-val="'Atkinson Hyperlegible', sans-serif" style="font-family:'Atkinson Hyperlegible', sans-serif;">
+            <span class="fc-sample">Aa</span>
+            <div class="fc-meta"><strong>★ Atkinson</strong><small>Ultra Clara</small></div>
+          </button>
+        </div>
     </div>
     <div class="setting-row">
       <div class="setting-group">
