@@ -98,7 +98,7 @@ function cargarComentariosCapitulo(identificadorHilo) {
 async function abrirCapitulo(novela, vol, listaCapitulos, idx, scrollRestaurar = 0) {
   estadoActual = { novela, volumen: vol, capitulosIndice: listaCapitulos, capIndex: idx };
   const capInfo = listaCapitulos[idx];
-  const capData = await (await fetch(`output/novelas/${novela.slug}/${vol.clave}/${capInfo.archivo}`)).json();
+  const capData = await (await fetch(`${(typeof vol !== 'undefined' && vol && typeof vol.ruta_indice === 'string' && /^https?:\/\//i.test(vol.ruta_indice)) ? vol.ruta_indice.replace(/[^/\\]+$/, '') + capInfo.archivo : `output/novelas/${novela.slug}/${vol.clave}/${capInfo.archivo}`}`)).json();
 
   if (!modoIncognito) {
     const progreso = JSON.parse(localStorage.getItem("nt_progreso") || "{}");
