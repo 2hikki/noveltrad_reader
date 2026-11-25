@@ -110,7 +110,7 @@ function aplicarPreferencias() {
   document.getElementById("lbl-fontsize").textContent = prefs.fontSize + "px";
   document.getElementById("lbl-lineheight").textContent = prefs.lineHeight.toFixed(2);
   document.getElementById("lbl-width").textContent = prefs.readerWidth + "px";
-  document.getElementById("font-family-select").value = prefs.fontFamily;
+  if (typeof sincronizarTarjetasFuente === "function") sincronizarTarjetasFuente();
   document.getElementById("width-slider").value = prefs.readerWidth;
   const picker = document.getElementById("custom-bg-picker");
   const hexLbl = document.getElementById("lbl-custom-hex");
@@ -262,3 +262,13 @@ document.addEventListener("click", (e) => {
 }, true);
 
 document.addEventListener("DOMContentLoaded", sincronizarTarjetasFuente);
+
+
+document.addEventListener("click", (e) => {
+  const rgbEl = e.target.closest("#custom-bg-color, #input-custom-bg, .custom-bg-row, [data-mecenas-rgb]");
+  if (rgbEl && !window.esMecenas) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    if (typeof abrirModalDonaciones === "function") abrirModalDonaciones();
+  }
+}, true);
