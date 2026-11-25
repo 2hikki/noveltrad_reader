@@ -40,9 +40,11 @@ def _exportar_imagenes_epub(libro, carpeta_salida: str | None) -> dict[str, str]
             out.write(data)
 
         rel_web = f"ilustraciones/{candidato}"
+        ruta_item = getattr(item, "file_name", None) or item.get_name() or ""
         for clave in {
             _normalizar_ruta_epub(item.get_name()),
-            _normalizar_ruta_epub(item.href),
+            _normalizar_ruta_epub(ruta_item),
+            os.path.basename(_normalizar_ruta_epub(ruta_item)),
             os.path.basename(_normalizar_ruta_epub(item.get_name())),
         }:
             if clave:

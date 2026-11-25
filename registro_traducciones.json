@@ -9,7 +9,7 @@
           "hash_sha256": "1f6ad863cbf667a345581f3114f243a0cfbd5bc56a3e9471a7ab5a41a4445aec",
           "total_capitulos": 27,
           "estado": "completado",
-          "fecha_completado": "2026-11-24 18:51:31"
+          "fecha_completado": "2026-11-25 13:16:41"
         }
       }
     },
@@ -22,21 +22,21 @@
           "hash_sha256": "beeb13f0aeb4e631b25e42e155477ab5caff2193b3f3316e2c2eba3d5c2c0435",
           "total_capitulos": 22,
           "estado": "completado",
-          "fecha_completado": "2026-11-24 20:33:19"
+          "fecha_completado": "2026-11-25 13:19:14"
         },
         "vol-02": {
           "archivo_origen": "La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. - V02 [Kyuden Translations].epub",
           "hash_sha256": "abbc4cfe9b368fb19c9e5aec16c3aaca4ae0eabb3197ca492ec002d74e31a741",
           "total_capitulos": 23,
           "estado": "completado",
-          "fecha_completado": "2026-11-24 20:33:19"
+          "fecha_completado": "2026-11-25 13:19:14"
         },
         "vol-03": {
           "archivo_origen": "La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. - V03 [Kyuden Translations].epub",
           "hash_sha256": "869cf6b3db506c86de0883aef944d1ab4ae15aa69fb130282ee05ad47ec24954",
           "total_capitulos": 29,
           "estado": "completado",
-          "fecha_completado": "2026-11-24 20:33:19"
+          "fecha_completado": "2026-11-25 13:19:15"
         }
       }
     }

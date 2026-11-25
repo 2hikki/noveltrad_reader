@@ -14,6 +14,38 @@ function toggleOnlyDownloaded(forzarValor) {
   if (chk) chk.checked = soloDescargados;
 }
 
+function _extraerRutasImgDesdeTexto(texto, rutaIndiceVol) {
+  const limpio = String(texto || "").trim();
+  if (!limpio) return [];
+  const tagMatch = limpio.match(/^\[?\[(?:img|ilustracion|ilustración|imagen)\s*:\s*([^\]\|]+)(?:\s*\|\s*[^\]]+)?\]?\]$/i);
+  const directImg = !tagMatch && /^(?:https?:\/\/|\.\/?|[a-z0-9_\-/]+\/)[^\s]+\.(?:png|jpe?g|webp|gif)(?:\?.*)?$/i.test(limpio);
+  const raw = tagMatch ? tagMatch[1].trim() : (directImg ? limpio : "");
+  if (!raw) return [];
+  if (/^(https?:\/\/|data:|\/)/i.test(raw)) return [raw];
+  const baseVol = rutaIndiceVol ? rutaIndiceVol.replace(/[^/\\]+$/, "") : "";
+  return baseVol ? [`${baseVol}${raw.replace(/^\.?\//, "")}`] : [raw];
+}
+
+async function _cachearIlustracionesCapitulo(cache, capData, rutaIndiceVol) {
+  if (!capData || !Array.isArray(capData.parrafos)) return;
+  const urls = new Set();
+  for (const p of capData.parrafos) {
+    for (const u of _extraerRutasImgDesdeTexto(p, rutaIndiceVol)) {
+      urls.add(u);
+    }
+  }
+  for (const urlImg of urls) {
+    try {
+      const resp = await fetch(urlImg);
+      if (resp && resp.ok) {
+        await cache.put(urlImg, resp.clone());
+      }
+    } catch {
+      // No bloquear la descarga del volumen si una ilustración falla
+    }
+  }
+}
+
 async function descargarVolumenOffline(novela, vol) {
   if (descargaEnCurso) return alert("Ya hay una descarga en curso. Espera a que termine.");
   const cache = await caches.open(OFFLINE_CACHE_NAME);
@@ -32,7 +64,11 @@ async function descargarVolumenOffline(novela, vol) {
       const rutaCap = `output/novelas/${novela.slug}/${vol.clave}/${capitulos[i].archivo}`;
       const res = await fetch(rutaCap);
       if (!res.ok) throw new Error(`Error descargando cap ${i + 1}`);
+      const capJson = await res.clone().json().catch(() => null);
       await cache.put(rutaCap, res.clone());
+      if (capJson) {
+        await _cachearIlustracionesCapitulo(cache, capJson, vol.ruta_indice);
+      }
       descargaEnCurso.actual = i + 1;
       actualizarUIProgresoDescarga();
     }

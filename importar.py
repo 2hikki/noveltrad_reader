@@ -59,7 +59,7 @@ def importar_novelas_en_espanol():
             os.makedirs(carpeta_vol_out, exist_ok=True)
 
             extraer_portada_epub(ruta_archivo, carpeta_vol_out)
-            capitulos = extraer_capitulos(ruta_archivo)
+            capitulos = extraer_capitulos(ruta_archivo, carpeta_salida=carpeta_vol_out)
             indice_web = []
 
             for cap in capitulos:
