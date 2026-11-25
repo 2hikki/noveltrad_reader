@@ -778,3 +778,77 @@ body {
   flex-direction: column;
   gap: 0.45rem;
 }
+
+/* CUENTA EN LA NUBE Y RANGO MECENAS */
+.cloud-account-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.mecenas-badge {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #111827;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.14rem 0.55rem;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+.lector-badge {
+  background: var(--surface-high);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.14rem 0.55rem;
+  border-radius: 999px;
+}
+
+.locked-mecenas {
+  opacity: 0.52;
+  position: relative;
+}
+
+/* 4 TEMAS EXCLUSIVOS DE MECENAS */
+:root[data-theme="sakura"] {
+  --bg: #1a1117;
+  --surface: #251921;
+  --surface-high: #33222d;
+  --text: #fce7f3;
+  --muted: #d6a8c0;
+  --accent: #f472b6;
+  --border: #472e3e;
+}
+
+:root[data-theme="eink"] {
+  --bg: #f5f5f2;
+  --surface: #eaeae5;
+  --surface-high: #deded7;
+  --text: #141413;
+  --muted: #52524e;
+  --accent: #27272a;
+  --border: #c8c8c0;
+}
+
+:root[data-theme="antique"] {
+  --bg: #efe3c8;
+  --surface: #e4d4b2;
+  --surface-high: #d7c39a;
+  --text: #382714;
+  --muted: #6b5134;
+  --accent: #8c4a19;
+  --border: #c4ae82;
+}
+
+:root[data-theme="cyber"] {
+  --bg: #0b0916;
+  --surface: #141029;
+  --surface-high: #1f193d;
+  --text: #ede9fe;
+  --muted: #a59ec9;
+  --accent: #38bdf8;
+  --border: #2e2659;
+}

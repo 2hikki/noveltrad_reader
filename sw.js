@@ -1,4 +1,4 @@
-const CACHE_NAME = "novelatrad-v13";
+const CACHE_NAME = "novelatrad-v14";
 const OFFLINE_VOLS_CACHE = "novelatrad-offline-vols";
 const ASSETS = [
   "./",
@@ -9,6 +9,7 @@ const ASSETS = [
   "./js/media.js",
   "./js/views.js",
   "./js/reader.js",
+  "./js/cloud.js",
   "./manifest.json",
   "./launchericon-192x192.png",
   "./launchericon-512x512.png"

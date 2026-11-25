@@ -12,6 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" />
 </head>
 <body>
   <!-- BARRA SUPERIOR DINÁMICA ESTILO MIHON -->
@@ -89,6 +90,10 @@
         <button data-theme-val="parchment" style="background:#ede0c8;color:#2f261d">Pergamino</button>
         <button data-theme-val="softgray" style="background:#e5e7eb;color:#1f2937">Gris</button>
                 <button data-theme-val="light" style="background:#ffffff;color:#111827">Claro</button>
+        <button class="mecenas-only-opt" data-theme-val="sakura" style="background:#1f151c;color:#f9a8d4">★ Sakura</button>
+        <button class="mecenas-only-opt" data-theme-val="eink" style="background:#f4f4f0;color:#111111">★ E-Ink</button>
+        <button class="mecenas-only-opt" data-theme-val="antique" style="background:#efe3c8;color:#3b2b18">★ Antiguo</button>
+        <button class="mecenas-only-opt" data-theme-val="cyber" style="background:#0d0b1a;color:#a78bfa">★ Cyber</button>
       </div>
       <div class="rgb-custom-row">
         <label for="custom-bg-picker" style="margin:0; flex:1;">Fondo RGB personalizado</label>
@@ -297,6 +302,7 @@
         <div class="more-brand-sub">NovelaTrad Reader</div>
       </div>
 
+      <div id="cloud-account-card" class="cloud-account-box"></div>
       <div class="more-list">
         <div class="more-item toggle-row" onclick="toggleIncognito()">
           <div class="more-icon">
@@ -546,5 +552,6 @@
   <script src="js/media.js"></script>
   <script src="js/views.js"></script>
   <script src="js/reader.js"></script>
+  <script type="module" src="js/cloud.js"></script>
 </body>
 </html>
