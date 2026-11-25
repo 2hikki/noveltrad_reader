@@ -258,7 +258,6 @@ def restaurar_marcadores_imagen(lote_original: list[str], parrafos_traducidos: l
     if not imgs_originales:
         return parrafos_traducidos
 
-    # Eliminar posibles versiones deformadas o duplicadas y reinsertar en posición proporcional exacta
     limpios = [
         p for p in parrafos_traducidos
         if not (isinstance(p, str) and p.strip().startswith("[img:"))
@@ -448,7 +447,29 @@ def procesar_volumen(
     return True
 
 
-def escanear_biblioteca_input(carpeta_input: str = "input", filtro_slug: str = None, forzar: bool = False):
+def pedir_novelas_por_numero(candidatas: list[tuple[str, str, list[str]]]) -> list[tuple[str, str, list[str]]]:
+    print("\n=== Novelas detectadas para traducir ===")
+    print("  [0] Todas las novelas listadas")
+    for idx, (nombre_carpeta, slug_novela, archivos) in enumerate(candidatas, start=1):
+        print(f"  [{idx}] {nombre_carpeta} ({len(archivos)} archivo(s) | slug: {slug_novela})")
+
+    while True:
+        eleccion = input(f"\nElige el número de novela [0-{len(candidatas)}]: ").strip()
+        if eleccion.isdigit():
+            num = int(eleccion)
+            if num == 0:
+                return candidatas
+            if 1 <= num <= len(candidatas):
+                return [candidatas[num - 1]]
+        print("Opción no válida. Escribe uno de los números listados.")
+
+
+def escanear_biblioteca_input(
+    carpeta_input: str = "input",
+    filtro_slug: str = None,
+    forzar: bool = False,
+    traducir_todas: bool = False,
+):
     if not os.path.exists(carpeta_input):
         os.makedirs(carpeta_input)
         print(f"Carpeta '{carpeta_input}/' creada. Crea una subcarpeta con el nombre de cada novela dentro.")
@@ -463,25 +484,34 @@ def escanear_biblioteca_input(carpeta_input: str = "input", filtro_slug: str = N
         print(f"No hay carpetas de novelas dentro de '{carpeta_input}/'. Ejemplo: {carpeta_input}/Mi Novela/vol1.epub")
         return
 
-    registro = cargar_registro()
-    novelas_procesadas = []
-
+    candidatas = []
     for nombre_carpeta in subcarpetas:
         ruta_novela = os.path.join(carpeta_input, nombre_carpeta)
         slug_novela = normalizar_slug(nombre_carpeta)
-
         if filtro_slug and filtro_slug != slug_novela:
             continue
-
         archivos = [
             f for f in sorted(os.listdir(ruta_novela))
             if f.lower().endswith((".epub", ".txt"))
         ]
+        if archivos:
+            candidatas.append((nombre_carpeta, slug_novela, archivos))
 
-        if not archivos:
-            continue
+    if not candidatas:
+        print("No se encontraron novelas con archivos .epub o .txt que coincidan.")
+        return
 
-        print(f"=== Revisando novela: '{nombre_carpeta}' (slug: {slug_novela}) ===")
+    if len(candidatas) > 1 and not filtro_slug and not traducir_todas:
+        seleccionadas = pedir_novelas_por_numero(candidatas)
+    else:
+        seleccionadas = candidatas
+
+    registro = cargar_registro()
+    novelas_procesadas = []
+
+    for nombre_carpeta, slug_novela, archivos in seleccionadas:
+        ruta_novela = os.path.join(carpeta_input, nombre_carpeta)
+        print(f"\n=== Revisando novela: '{nombre_carpeta}' (slug: {slug_novela}) ===")
         hubo_cambios = False
         for idx, archivo in enumerate(archivos, start=1):
             num_vol = detectar_numero_volumen(archivo, idx)
@@ -502,6 +532,12 @@ if __name__ == "__main__":
     parser.add_argument("--input-dir", default="input", help="Carpeta de entrada (por defecto: input)")
     parser.add_argument("--slug", default=None, help="Procesar únicamente la novela cuyo slug coincida")
     parser.add_argument("--forzar", action="store_true", help="Reprocesar volúmenes/capítulos aunque ya figuren completados")
+    parser.add_argument("--all", action="store_true", help="Traducir todas las novelas detectadas sin pedir selección")
     args = parser.parse_args()
 
-    escanear_biblioteca_input(carpeta_input=args.input_dir, filtro_slug=args.slug, forzar=args.forzar)
+    escanear_biblioteca_input(
+        carpeta_input=args.input_dir,
+        filtro_slug=args.slug,
+        forzar=args.forzar,
+        traducir_todas=args.all,
+    )
