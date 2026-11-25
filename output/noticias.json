@@ -5,6 +5,12 @@
       "tipo": "Proyecto",
       "titulo": "¡Lanzamiento de NovelaTrad Reader!",
       "contenido": "Estrenamos nueva interfaz inspirada en Mihon con Biblioteca personal, Historial, Libreta de citas y soporte PWA offline."
+
+"fecha": "2026-11-24",
+      "tipo": "Anuncio",
+      "titulo": "¡Probando funciones de importación!",
+      "contenido": "Estoy probando importar novelas ya traducidas mediante otro script, gracias a Kyuden Translations por esta traducción."
+
     }
   ]
 }

@@ -12,6 +12,33 @@
           "fecha_completado": "2026-11-24 18:51:31"
         }
       }
+    },
+    "la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations": {
+      "carpeta_origen": "La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. [Kyuden Translations]",
+      "titulo_es": "La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. [Kyuden Translations]",
+      "volumenes": {
+        "vol-01": {
+          "archivo_origen": "La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. - V01 [Kyuden Translations].epub",
+          "hash_sha256": "beeb13f0aeb4e631b25e42e155477ab5caff2193b3f3316e2c2eba3d5c2c0435",
+          "total_capitulos": 22,
+          "estado": "completado",
+          "fecha_completado": "2026-11-24 20:33:19"
+        },
+        "vol-02": {
+          "archivo_origen": "La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. - V02 [Kyuden Translations].epub",
+          "hash_sha256": "abbc4cfe9b368fb19c9e5aec16c3aaca4ae0eabb3197ca492ec002d74e31a741",
+          "total_capitulos": 23,
+          "estado": "completado",
+          "fecha_completado": "2026-11-24 20:33:19"
+        },
+        "vol-03": {
+          "archivo_origen": "La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. - V03 [Kyuden Translations].epub",
+          "hash_sha256": "869cf6b3db506c86de0883aef944d1ab4ae15aa69fb130282ee05ad47ec24954",
+          "total_capitulos": 29,
+          "estado": "completado",
+          "fecha_completado": "2026-11-24 20:33:19"
+        }
+      }
     }
   }
 }

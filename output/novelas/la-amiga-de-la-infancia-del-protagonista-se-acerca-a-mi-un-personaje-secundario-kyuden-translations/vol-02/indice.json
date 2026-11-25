@@ -1,0 +1,122 @@
+{
+  "slug": "la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations",
+  "volumen": 2,
+  "titulo_novela": "La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. [Kyuden Translations]",
+  "capitulos": [
+    {
+      "numero": 1,
+      "titulo": "Capítulo 1",
+      "archivo": "cap-01.json"
+    },
+    {
+      "numero": 2,
+      "titulo": "Capítulo 2",
+      "archivo": "cap-02.json"
+    },
+    {
+      "numero": 3,
+      "titulo": "Capítulo 3",
+      "archivo": "cap-03.json"
+    },
+    {
+      "numero": 4,
+      "titulo": "Capítulo 4",
+      "archivo": "cap-04.json"
+    },
+    {
+      "numero": 5,
+      "titulo": "Capítulo 5",
+      "archivo": "cap-05.json"
+    },
+    {
+      "numero": 6,
+      "titulo": "Capítulo 6",
+      "archivo": "cap-06.json"
+    },
+    {
+      "numero": 7,
+      "titulo": "Capítulo 7",
+      "archivo": "cap-07.json"
+    },
+    {
+      "numero": 8,
+      "titulo": "Capítulo 8",
+      "archivo": "cap-08.json"
+    },
+    {
+      "numero": 9,
+      "titulo": "Capítulo 9",
+      "archivo": "cap-09.json"
+    },
+    {
+      "numero": 10,
+      "titulo": "Capítulo 10",
+      "archivo": "cap-10.json"
+    },
+    {
+      "numero": 11,
+      "titulo": "Capítulo 11",
+      "archivo": "cap-11.json"
+    },
+    {
+      "numero": 12,
+      "titulo": "Capítulo 12",
+      "archivo": "cap-12.json"
+    },
+    {
+      "numero": 13,
+      "titulo": "Capítulo 13",
+      "archivo": "cap-13.json"
+    },
+    {
+      "numero": 14,
+      "titulo": "Capítulo 14",
+      "archivo": "cap-14.json"
+    },
+    {
+      "numero": 15,
+      "titulo": "Capítulo 15",
+      "archivo": "cap-15.json"
+    },
+    {
+      "numero": 16,
+      "titulo": "Capítulo 16",
+      "archivo": "cap-16.json"
+    },
+    {
+      "numero": 17,
+      "titulo": "Capítulo 17",
+      "archivo": "cap-17.json"
+    },
+    {
+      "numero": 18,
+      "titulo": "Capítulo 18",
+      "archivo": "cap-18.json"
+    },
+    {
+      "numero": 19,
+      "titulo": "Capítulo 19",
+      "archivo": "cap-19.json"
+    },
+    {
+      "numero": 20,
+      "titulo": "Capítulo 20",
+      "archivo": "cap-20.json"
+    },
+    {
+      "numero": 21,
+      "titulo": "Capítulo 21",
+      "archivo": "cap-21.json"
+    },
+    {
+      "numero": 22,
+      "titulo": "Capítulo 22",
+      "archivo": "cap-22.json"
+    },
+    {
+      "numero": 23,
+      "titulo": "Capítulo 23",
+      "archivo": "cap-23.json"
+    }
+  ]
+}

@@ -18,6 +18,41 @@
           "portada": "output/novelas/deja-vute-betrayal-begets-new-beginnings/vol-01/portada.jpg"
         }
       ]
+    },
+    {
+      "slug": "la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations",
+      "titulo_es": "La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. [Kyuden Translations]",
+      "titulo_original": "La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. [Kyuden Translations]",
+      "sinopsis": "Edición en español de La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. [Kyuden Translations].",
+      "tono": "Traducción importada",
+      "portada": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-01/portada.jpg",
+      "ultima_actualizacion": "2026-11-24 20:33:19",
+      "volumenes": [
+        {
+          "clave": "vol-01",
+          "numero": 1,
+          "total_capitulos": 22,
+          "fecha_subida": "2026-11-24 20:33:19",
+          "ruta_indice": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-01/indice.json",
+          "portada": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-01/portada.jpg"
+        },
+        {
+          "clave": "vol-02",
+          "numero": 2,
+          "total_capitulos": 23,
+          "fecha_subida": "2026-11-24 20:33:19",
+          "ruta_indice": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-02/indice.json",
+          "portada": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-02/portada.jpg"
+        },
+        {
+          "clave": "vol-03",
+          "numero": 3,
+          "total_capitulos": 29,
+          "fecha_subida": "2026-11-24 20:33:19",
+          "ruta_indice": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-03/indice.json",
+          "portada": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-03/portada.jpg"
+        }
+      ]
     }
   ]
 }
