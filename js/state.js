@@ -130,14 +130,14 @@ document.getElementById("btn-settings").addEventListener("click", () => {
   document.getElementById("music-drawer").classList.add("hidden");
   document.getElementById("settings-drawer").classList.toggle("hidden");
 });
-document.getElementById("btn-close-settings").addEventListener("click", () => document.getElementById("settings-drawer").classList.add("hidden"));
-document.querySelectorAll("#theme-swatches button").forEach(btn => btn.addEventListener("click", () => { prefs.theme = btn.dataset.themeVal; aplicarPreferencias(); }));
-document.getElementById("font-family-select").addEventListener("change", (e) => { prefs.fontFamily = e.target.value; aplicarPreferencias(); });
-document.getElementById("btn-font-inc").addEventListener("click", () => { if (prefs.fontSize < 30) { prefs.fontSize++; aplicarPreferencias(); } });
-document.getElementById("btn-font-dec").addEventListener("click", () => { if (prefs.fontSize > 13) { prefs.fontSize--; aplicarPreferencias(); } });
-document.getElementById("btn-lh-inc").addEventListener("click", () => { if (prefs.lineHeight < 2.4) { prefs.lineHeight = +(prefs.lineHeight + 0.1).toFixed(2); aplicarPreferencias(); } });
-document.getElementById("btn-lh-dec").addEventListener("click", () => { if (prefs.lineHeight > 1.3) { prefs.lineHeight = +(prefs.lineHeight - 0.1).toFixed(2); aplicarPreferencias(); } });
-document.getElementById("width-slider").addEventListener("input", (e) => { prefs.readerWidth = parseInt(e.target.value, 10); aplicarPreferencias(); });
+document.getElementById("btn-close-settings")?.addEventListener("click", () => document.getElementById("settings-drawer").classList.add("hidden"));
+document.querySelectorAll("#theme-swatches button").forEach(btn => btn?.addEventListener("click", () => { prefs.theme = btn.dataset.themeVal; aplicarPreferencias(); }));
+document.getElementById("font-family-select")?.addEventListener("change", (e) => { prefs.fontFamily = e.target.value; aplicarPreferencias(); });
+document.getElementById("btn-font-inc")?.addEventListener("click", () => { if (prefs.fontSize < 30) { prefs.fontSize++; aplicarPreferencias(); } });
+document.getElementById("btn-font-dec")?.addEventListener("click", () => { if (prefs.fontSize > 13) { prefs.fontSize--; aplicarPreferencias(); } });
+document.getElementById("btn-lh-inc")?.addEventListener("click", () => { if (prefs.lineHeight < 2.4) { prefs.lineHeight = +(prefs.lineHeight + 0.1).toFixed(2); aplicarPreferencias(); } });
+document.getElementById("btn-lh-dec")?.addEventListener("click", () => { if (prefs.lineHeight > 1.3) { prefs.lineHeight = +(prefs.lineHeight - 0.1).toFixed(2); aplicarPreferencias(); } });
+document.getElementById("width-slider")?.addEventListener("input", (e) => { prefs.readerWidth = parseInt(e.target.value, 10); aplicarPreferencias(); });
 
 document.getElementById("custom-bg-picker").addEventListener("input", (e) => {
   prefs.theme = "custom";
