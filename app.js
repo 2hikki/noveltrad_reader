@@ -6,6 +6,117 @@ let categoriaActiva = "Todas";
 let filtroBusqueda = "";
 let modoIncognito = JSON.parse(localStorage.getItem("nt_incognito") || "false");
 let soloPendientes = JSON.parse(localStorage.getItem("nt_solo_pendientes") || "false");
+let soloDescargados = JSON.parse(localStorage.getItem("nt_solo_descargados") || "false");
+let descargaEnCurso = null;
+const OFFLINE_CACHE_NAME = "novelatrad-offline-vols";
+
+function obtenerDescargadosMap() { return JSON.parse(localStorage.getItem("nt_descargados") || "{}"); }
+function guardarDescargadosMap(mapa) { localStorage.setItem("nt_descargados", JSON.stringify(mapa)); }
+function estaVolumenDescargado(slug, volClave) { return !!obtenerDescargadosMap()[`${slug}_${volClave}`]; }
+function tieneAlgunVolumenDescargado(slug) { return Object.keys(obtenerDescargadosMap()).some((k) => k.startsWith(`${slug}_`)); }
+
+function toggleOnlyDownloaded(forzarValor) {
+  soloDescargados = typeof forzarValor === "boolean" ? forzarValor : !soloDescargados;
+  localStorage.setItem("nt_solo_descargados", JSON.stringify(soloDescargados));
+  const chk = document.getElementById("chk-only-downloaded");
+  if (chk) chk.checked = soloDescargados;
+}
+
+async function descargarVolumenOffline(novela, vol) {
+  if (descargaEnCurso) return alert("Ya hay una descarga en curso. Espera a que termine.");
+  const cache = await caches.open(OFFLINE_CACHE_NAME);
+  await cache.add(vol.ruta_indice);
+  const indiceData = await (await fetch(vol.ruta_indice)).json();
+  const capitulos = indiceData.capitulos || [];
+
+  descargaEnCurso = { slug: novela.slug, novelaTitulo: novela.titulo_es, volClave: vol.clave, volNumero: vol.numero, actual: 0, total: capitulos.length };
+  actualizarUIProgresoDescarga();
+  if (estadoActual.novela?.slug === novela.slug) abrirNovela(novela);
+
+  try {
+    if (novela.portada) await cache.add(novela.portada).catch(() => {});
+    if (vol.portada) await cache.add(vol.portada).catch(() => {});
+    for (let i = 0; i < capitulos.length; i++) {
+      const rutaCap = `output/novelas/${novela.slug}/${vol.clave}/${capitulos[i].archivo}`;
+      const res = await fetch(rutaCap);
+      if (!res.ok) throw new Error(`Error descargando cap ${i + 1}`);
+      await cache.put(rutaCap, res.clone());
+      descargaEnCurso.actual = i + 1;
+      actualizarUIProgresoDescarga();
+    }
+    const mapa = obtenerDescargadosMap();
+    mapa[`${novela.slug}_${vol.clave}`] = { slug: novela.slug, novelaTitulo: novela.titulo_es, volClave: vol.clave, volNumero: vol.numero, totalCapitulos: capitulos.length, fecha: new Date().toLocaleDateString() };
+    guardarDescargadosMap(mapa);
+  } catch {
+    alert("No se pudo completar la descarga. Verifica tu conexión.");
+  } finally {
+    descargaEnCurso = null;
+    actualizarUIProgresoDescarga();
+    if (tabActual === "downloads") renderizarListaDescargas();
+    if (estadoActual.novela?.slug === novela.slug && document.getElementById("view-novel").classList.contains("active")) abrirNovela(novela);
+  }
+}
+
+async function eliminarVolumenOffline(slug, volClave) {
+  const mapa = obtenerDescargadosMap();
+  const info = mapa[`${slug}_${volClave}`];
+  const cache = await caches.open(OFFLINE_CACHE_NAME);
+  for (const req of await cache.keys()) {
+    if (req.url.includes(`/${slug}/${volClave}/`)) await cache.delete(req);
+  }
+  delete mapa[`${slug}_${volClave}`];
+  guardarDescargadosMap(mapa);
+  if (tabActual === "downloads") renderizarListaDescargas();
+  if (info && estadoActual.novela?.slug === slug && document.getElementById("view-novel").classList.contains("active")) abrirNovela(estadoActual.novela);
+}
+
+function actualizarUIProgresoDescarga() {
+  const box = document.getElementById("active-download-box");
+  if (!box) return;
+  if (!descargaEnCurso) return box.classList.add("hidden");
+  const pct = Math.round((descargaEnCurso.actual / Math.max(descargaEnCurso.total, 1)) * 100);
+  box.classList.remove("hidden");
+  box.innerHTML = `
+    <div style="display:flex; justify-content:space-between; font-size:0.88rem; font-weight:600;">
+      <span>Descargando: ${descargaEnCurso.novelaTitulo} (Vol. ${descargaEnCurso.volNumero})</span>
+      <span style="color:var(--accent);">${descargaEnCurso.actual}/${descargaEnCurso.total}</span>
+    </div>
+    <div class="m3-progress-track"><div class="m3-progress-fill" style="width:${pct}%;"></div></div>
+  `;
+}
+
+function abrirVistaDescargas() {
+  actualizarUIProgresoDescarga();
+  renderizarListaDescargas();
+  mostrarVista("downloads");
+}
+
+function renderizarListaDescargas() {
+  const list = document.getElementById("downloaded-vols-list");
+  const items = Object.values(obtenerDescargadosMap());
+  if (!items.length) {
+    list.innerHTML = `<div class="kaomoji-empty"><div class="kaomoji-face">(￣o￣) . z Z</div><div class="kaomoji-text">No hay volúmenes descargados sin conexión</div></div>`;
+    return;
+  }
+  list.innerHTML = items.map(item => `
+    <div class="feed-item">
+      <div>
+        <div style="font-weight:600;">${item.novelaTitulo} — Vol. ${item.volNumero}</div>
+        <div class="feed-meta">${item.totalCapitulos} capítulos offline • Guardado el ${item.fecha}</div>
+      </div>
+      <div style="display:flex; gap:0.4rem;">
+        <button class="m3-btn tonal" onclick="abrirNovelaPorSlug('${item.slug}')">Abrir</button>
+        <button class="m3-btn tonal" style="color:#f28b82;" onclick="eliminarVolumenOffline('${item.slug}', '${item.volClave}')">Borrar</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+document.getElementById("btn-clear-all-downloads").addEventListener("click", async () => {
+  await caches.delete(OFFLINE_CACHE_NAME);
+  guardarDescargadosMap({});
+  renderizarListaDescargas();
+});
 
 let estadoActual = {
   novela: null,
@@ -20,7 +131,7 @@ let reproductorActivo = false;
 // 0. CONFIGURACIÓN DE COMENTARIOS (GISCUS)
 // ==========================================
 const GISCUS_CONFIG = {
-    repo: "2hikki/noveltrad_reader",
+  repo: "2hikki/noveltrad_reader",
   repoId: "R_kgDOV67idg",
   category: "General",
   categoryId: "DIC_kwDOV67ids4DL6PB"
@@ -195,7 +306,8 @@ const titulosVista = {
   explore: "Explorar",
   more: "Más",
   notebook: "Citas y Notas",
-  stats: "Estadísticas"
+  stats: "Estadísticas",
+  downloads: "Cola de descargas"
 };
 
 function mostrarVista(nombre) {
@@ -238,6 +350,11 @@ function cambiarTab(tabName) {
   } else if (tabName === "more") {
     document.getElementById("chk-incognito").checked = modoIncognito;
     document.getElementById("chk-only-unread").checked = soloPendientes;
+    const chkDl = document.getElementById("chk-only-downloaded");
+    if (chkDl) chkDl.checked = soloDescargados;
+    const totalDesc = Object.keys(obtenerDescargadosMap()).length;
+    const sumEl = document.getElementById("more-downloads-summary");
+    if (sumEl) sumEl.textContent = totalDesc > 0 ? `${totalDesc} volumen(es) disponibles sin conexión` : "Gestionar volúmenes guardados offline";
   }
   mostrarVista(tabName);
 }
@@ -367,12 +484,14 @@ function contarCapitulosSinLeer(novela) {
 function crearTarjetaMihon(novela, esExplorar = false) {
   const enBib = obtenerBibliotecaSlugs().includes(novela.slug);
   const sinLeer = contarCapitulosSinLeer(novela);
+  const offlineTag = tieneAlgunVolumenDescargado(novela.slug) ? `<span class="offline-badge">Offline</span>` : "";
 
   const card = document.createElement("div");
   card.className = "mihon-card";
   card.innerHTML = `
     ${sinLeer > 0 ? `<span class="unread-badge">${sinLeer}</span>` : ""}
     ${(esExplorar && enBib) ? `<span class="in-lib-tag">En biblioteca</span>` : ""}
+    ${offlineTag}
     ${novela.portada ? `<img src="${novela.portada}" alt="${novela.titulo_es}" loading="lazy" />` : `<div class="mihon-card-placeholder">📖</div>`}
     <div class="mihon-card-overlay">${novela.titulo_es}</div>
   `;
@@ -390,6 +509,7 @@ function renderizarBiblioteca() {
     if (!slugs.includes(n.slug)) return false;
     if (categoriaActiva !== "Todas" && (mapaCat[n.slug] || "Leyendo") !== categoriaActiva) return false;
     if (soloPendientes && contarCapitulosSinLeer(n) === 0) return false;
+    if (soloDescargados && !tieneAlgunVolumenDescargado(n.slug)) return false;
     if (q && !n.titulo_es.toLowerCase().includes(q) && !n.sinopsis.toLowerCase().includes(q)) return false;
     return true;
   });
@@ -630,8 +750,14 @@ async function abrirNovela(novela) {
     const indiceData = await (await fetch(vol.ruta_indice)).json();
     const box = document.createElement("div");
     box.className = "vol-box";
-    box.innerHTML = `
-      <div class="vol-header">
+
+    const descargado = estaVolumenDescargado(novela.slug, vol.clave);
+    const descargandoEste = descargaEnCurso && descargaEnCurso.slug === novela.slug && descargaEnCurso.volClave === vol.clave;
+
+    const headerMain = document.createElement("div");
+    headerMain.className = "vol-header-main";
+    headerMain.innerHTML = `
+      <div class="vol-header" style="margin-bottom:0;">
         ${vol.portada ? `<img src="${vol.portada}" class="vol-cover" />` : ""}
         <div>
           <h3>Volumen ${vol.numero}</h3>
@@ -639,6 +765,24 @@ async function abrirNovela(novela) {
         </div>
       </div>
     `;
+
+    const btnDl = document.createElement("button");
+    btnDl.className = "vol-download-btn" + (descargado ? " downloaded" : "");
+    if (descargandoEste) {
+      btnDl.disabled = true;
+      btnDl.textContent = `⏳ ${descargaEnCurso.actual}/${descargaEnCurso.total}`;
+    } else if (descargado) {
+      btnDl.textContent = "✓ Descargado";
+      btnDl.onclick = () => {
+        if (confirm(`¿Eliminar Volumen ${vol.numero} de la caché offline?`)) eliminarVolumenOffline(novela.slug, vol.clave);
+      };
+    } else {
+      btnDl.textContent = "⬇ Descargar";
+      btnDl.onclick = () => descargarVolumenOffline(novela, vol);
+    }
+
+    headerMain.appendChild(btnDl);
+    box.appendChild(headerMain);
 
     const ul = document.createElement("ul");
     ul.className = "cap-list";

@@ -232,7 +232,31 @@
           </label>
         </div>
 
+        <div class="more-item toggle-row" onclick="toggleOnlyDownloaded()">
+          <div class="more-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          </div>
+          <div class="more-text">
+            <div class="more-title">Sólo ya descargados</div>
+            <div class="more-desc">Filtra la biblioteca para ver sólo obras disponibles sin conexión</div>
+          </div>
+          <label class="m3-switch" onclick="event.stopPropagation()">
+            <input type="checkbox" id="chk-only-downloaded" onchange="toggleOnlyDownloaded(this.checked)" />
+            <span class="m3-slider"></span>
+          </label>
+        </div>
+
         <hr class="m3-divider" />
+
+        <button class="more-item" onclick="abrirVistaDescargas()">
+          <div class="more-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </div>
+          <div class="more-text">
+            <div class="more-title">Cola de descargas</div>
+            <div class="more-desc" id="more-downloads-summary">Gestionar volúmenes guardados offline</div>
+          </div>
+        </button>
 
         <button class="more-item" onclick="abrirModalCategorias()">
           <div class="more-icon">
@@ -345,6 +369,17 @@
         <button class="m3-btn tonal" onclick="cambiarTab('more')">← Más</button>
       </div>
       <div id="stats-container" class="stats-grid"></div>
+    </section>
+
+    <!-- VISTA 10: COLA DE DESCARGAS Y ALMACENAMIENTO OFFLINE -->
+    <section id="view-downloads" class="view">
+      <div class="notebook-header">
+        <button class="m3-btn tonal" onclick="cambiarTab('more')">← Más</button>
+        <button id="btn-clear-all-downloads" class="m3-btn tonal">Borrar todas</button>
+      </div>
+      <div id="active-download-box" class="download-progress-card hidden"></div>
+      <h3 style="font-size:0.95rem; color:var(--muted); margin: 0.75rem 0;">Volúmenes guardados sin conexión</h3>
+      <div id="downloaded-vols-list" class="feed-list"></div>
     </section>
   </main>
 
