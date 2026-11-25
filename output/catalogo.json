@@ -1,21 +1,21 @@
 {
   "novelas": [
     {
-      "slug": "deja-vute-betrayal-begets-new-beginnings",
-      "titulo_es": "Déjà Vute: La traición engendra un nuevo comienzo",
-      "titulo_original": "Déjà Vute Betrayal Begets New Beginnings",
-      "sinopsis": "Freesia Salt es traicionada, despojada de su prometido y envenenada por su manipuladora hermana menor Kalmia, la Santa del reino. En sus momentos finales en un bosque lluvioso, Freesia descubre que es la reencarnación o poseedora del poder de la Bruja del Sol. Tras morir, retrocede dos años en el tiempo. Decidida a alejarse de su familia abusiva y romper su compromiso con Vute Sylphen (a quien cree enamorado de Kalmia), planea ingresar a la Academia Nacional Warden para obtener la beca de graduación e independizarse. Sin embargo, Vute también ha viajado en el tiempo tras encontrar el cuerpo de Freesia en el futuro. Profundamente enamorado de ella, renuncia a su puesto como vicecomandante de los Caballeros Reales y la sigue a la academia para protegerla, desencadenando una serie de malentendidos mientras Freesia intenta salvar a su amiga la princesa Olivia y construir una vida propia.",
-      "tono": "Fantasía romántica con regresión temporal y drama aristocrático. La prosa equilibra la introspección emocional y el trauma de la protagonista frente a la traición con momentos de comedia ligera, equívocos románticos y superación personal.",
-      "portada": "output/novelas/deja-vute-betrayal-begets-new-beginnings/vol-01/portada.jpg",
-      "ultima_actualizacion": "2026-11-25 13:16:41",
+      "slug": "making-magic---the-sweet-life-of-a-witch-who-knows-an-infinite-mp-loophole",
+      "titulo_es": "Haciendo magia: La dulce vida de una bruja que conoce un truco de PM infinito (Volumen 1) ",
+      "titulo_original": "Making Magic - The Sweet Life of a Witch Who Knows an Infinite MP Loophole",
+      "sinopsis": "Tras un prólogo ambientado quinientos años en el futuro donde la protagonista vive en paz en una mansión dentro del Bosque de la Bruja de la Creación junto a Teto y sus doncellas muñecas como Beretta, la historia retrocede al día de su reencarnación. Sin recordar su vida pasada ni su nombre, es invocada por la diosa Liriel, quien solo le pide vivir una vida larga, y elige la habilidad única Magia de Creación. Abandonada en un yermo desolado con apenas 50 PM y cuerpo de niña de doce años, descubre que puede fabricar frutas extrañas capaces de aumentar su PM máximo diariamente de forma indefinida. Adopta la clase Bruja, aprende Magia de Origen y crea a Teto, un gólem de arcilla que evoluciona a terranoide con apariencia de joven espadachina tras absorber el núcleo y el espíritu de una mazmorra. Al salir a la civilización, salvan al grupo de aventureros Halcones Jinetes del Viento, llegan al pueblo fronterizo de Darryl, donde Chise adopta su nombre, y suben rápidamente a rango D tras defender la puerta de diez ogros usando cristales de maná como proyectiles. Tras forjar una espada de acero mágico para Teto con dos hermanos enanos, viajan en carruaje a Ottoh y aceptan apoyar una aldea pionera en ruinas dirigida por Gash Gyaspar, séptimo hijo de un conde. Chise reorganiza la aldea, impone disciplina e higiene, aprende elaboración de pociones, siembra hojaburbujas para fabricar jabón y derrota en solitario a una hidra de agua de cinco cabezas con una guillotina creada con 100 000 PM. Al despedirse, Chise comprende que su enorme maná ralentizará su envejecimiento y decide viajar para encontrar o crear un hogar propio, poniendo rumbo hacia el Yermo de la Nada. Un capítulo extra treinta años después muestra la aldea convertida en el próspero Pueblo de Gash gracias al jabón, y el libro cierra con relatos breves sobre la convivencia cotidiana entre Chise y Teto.",
+      "tono": "Isekai de fantasía ligera y cotidiana (slice-of-life) con humor sutil, progresión estilo RPG, introspección serena de una protagonista madura en cuerpo de niña y momentos tiernos alternados con escenas de acción mágica.",
+      "portada": "output/novelas/making-magic---the-sweet-life-of-a-witch-who-knows-an-infinite-mp-loophole/vol-01/portada.jpg",
+      "ultima_actualizacion": "2026-11-25 17:54:15",
       "volumenes": [
         {
           "clave": "vol-01",
           "numero": 1,
-          "total_capitulos": 27,
-          "fecha_subida": "2026-11-25 13:16:41",
-          "ruta_indice": "output/novelas/deja-vute-betrayal-begets-new-beginnings/vol-01/indice.json",
-          "portada": "output/novelas/deja-vute-betrayal-begets-new-beginnings/vol-01/portada.jpg"
+          "total_capitulos": 37,
+          "fecha_subida": "2026-11-25 17:54:15",
+          "ruta_indice": "output/novelas/making-magic---the-sweet-life-of-a-witch-who-knows-an-infinite-mp-loophole/vol-01/indice.json",
+          "portada": "output/novelas/making-magic---the-sweet-life-of-a-witch-who-knows-an-infinite-mp-loophole/vol-01/portada.jpg"
         }
       ]
     },
