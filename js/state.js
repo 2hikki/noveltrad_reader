@@ -272,3 +272,12 @@ document.addEventListener("click", (e) => {
     if (typeof abrirModalDonaciones === "function") abrirModalDonaciones();
   }
 }, true);
+
+document.addEventListener("click", (e) => {
+  const esColorPicker = e.target.matches('input[type="color"]') || e.target.closest('[data-mecenas-rgb]');
+  if (esColorPicker && !window.esMecenas) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    if (typeof abrirModalDonaciones === "function") abrirModalDonaciones();
+  }
+}, true);
