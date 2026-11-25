@@ -97,6 +97,13 @@ function aplicarPreferencias() {
     localStorage.setItem("nt_prefs", JSON.stringify(prefs));
   }
   document.documentElement.setAttribute("data-theme", prefs.theme);
+  const GRADIENTES_MAP = {
+    "grad-aurora": "radial-gradient(circle at 15% 10%, #134e4a 0%, #0f172a 55%, #1e1b4b 100%)",
+    "grad-sunset": "linear-gradient(145deg, #3b1224 0%, #27131e 48%, #361c12 100%)",
+    "grad-abyss":  "radial-gradient(circle at 80% 15%, #1e3a8a 0%, #090e1f 55%, #050811 100%)",
+    "grad-forest": "linear-gradient(155deg, #0d2118 0%, #132a20 50%, #1a2e22 100%)",
+    "grad-sakura": "linear-gradient(145deg, #2d1424 0%, #1f151c 52%, #2a1826 100%)"
+  };
   if (prefs.theme === "custom" && prefs.customBg) {
     aplicarFondoCustomRGB(prefs.customBg);
   } else {
@@ -179,9 +186,12 @@ window.aplicarGradientePortada = function (imgUrl) {
     }
     const hue1 = Math.abs(h) % 360;
     const hue2 = (hue1 + 38) % 360;
-    document.documentElement.style.setProperty("--dyn-c1", `hsl(${hue1}, 42%, 16%)`);
-    document.documentElement.style.setProperty("--dyn-c2", `hsl(${hue2}, 38%, 11%)`);
+    const f1 = `hsl(${hue1}, 42%, 16%)`;
+    const f2 = `hsl(${hue2}, 38%, 11%)`;
+    document.documentElement.style.setProperty("--dyn-c1", f1);
+    document.documentElement.style.setProperty("--dyn-c2", f2);
     document.body.classList.add("chameleon-active");
+    document.body.style.background = `linear-gradient(155deg, ${f1} 0%, ${f2} 100%) fixed`;
   };
 
   if (!targetUrl) {
@@ -210,9 +220,12 @@ window.aplicarGradientePortada = function (imgUrl) {
           else { r2 += r; g2 += g; b2 += b; c2++; }
         }
       }
-      document.documentElement.style.setProperty("--dyn-c1", `rgb(${Math.round(r1/c1)}, ${Math.round(g1/c1)}, ${Math.round(b1/c1)})`);
-      document.documentElement.style.setProperty("--dyn-c2", `rgb(${Math.round(r2/c2)}, ${Math.round(g2/c2)}, ${Math.round(b2/c2)})`);
+      const c1Str = `rgb(${Math.round(r1/c1)}, ${Math.round(g1/c1)}, ${Math.round(b1/c1)})`;
+      const c2Str = `rgb(${Math.round(r2/c2)}, ${Math.round(g2/c2)}, ${Math.round(b2/c2)})`;
+      document.documentElement.style.setProperty("--dyn-c1", c1Str);
+      document.documentElement.style.setProperty("--dyn-c2", c2Str);
       document.body.classList.add("chameleon-active");
+      document.body.style.background = `linear-gradient(155deg, ${c1Str} 0%, ${c2Str} 100%) fixed`;
     } catch (e) {
       aplicarFallbackHash(targetUrl);
     }
@@ -333,4 +346,15 @@ document.addEventListener("DOMContentLoaded", () => {
     obs.observe(document.body, { attributes: true, subtree: true, childList: true });
     setInterval(syncBtnAa, 600);
   }
+});
+
+
+// === GARANTIZAR CLIC EN #gradient-grid Y ACTUALIZACIÓN DE CAMALEÓN ===
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("#gradient-grid [data-theme-val], #theme-swatches [data-theme-val]");
+  if (!btn) return;
+  const val = btn.dataset.themeVal;
+  if (typeof esFuncionMecenasBloqueada === "function" && esFuncionMecenasBloqueada(val)) return;
+  prefs.theme = val;
+  if (typeof aplicarPreferencias === "function") aplicarPreferencias();
 });

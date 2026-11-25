@@ -1113,3 +1113,17 @@ body.chameleon-active main {
 #btn-reader-aa:hover {
   transform: scale(1.04);
 }
+
+
+/* === TRANSPARENCIA DE CONTENEDORES EN GRADIENTES / CAMALEÓN === */
+:root[data-theme^="grad-"] #app-container,
+:root[data-theme^="grad-"] .view,
+:root[data-theme^="grad-"] .reader-view,
+:root[data-theme^="grad-"] main,
+body.chameleon-active #app-container,
+body.chameleon-active .view,
+body.chameleon-active .reader-view,
+body.chameleon-active main {
+  background: transparent !important;
+  background-color: transparent !important;
+}
