@@ -580,3 +580,35 @@ body {
   color: var(--accent);
   margin-bottom: 0.2rem;
 }
+
+/* SELECTOR RGB PERSONALIZADO */
+.rgb-custom-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.45rem;
+  padding: 0.45rem 0.65rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.rgb-hex-tag {
+  font-family: monospace;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+#custom-bg-picker {
+  width: 34px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+#custom-bg-picker::-webkit-color-swatch-wrapper { padding: 0; }
+#custom-bg-picker::-webkit-color-swatch {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
