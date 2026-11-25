@@ -1,5 +1,13 @@
-const CACHE_NAME = "novelatrad-v1";
-const ASSETS = ["./", "./index.html", "./styles.css", "./app.js", "./manifest.json"];
+const CACHE_NAME = "novelatrad-v2";
+const ASSETS = [
+  "./",
+  "./index.html",
+  "./styles.css",
+  "./app.js",
+  "./manifest.json",
+  "./launchericon-192x192.png",
+  "./launchericon-512x512.png"
+];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
