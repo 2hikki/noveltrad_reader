@@ -125,8 +125,9 @@
 
   <!-- MENÚ FLOTANTE AL SELECCIONAR TEXTO -->
   <div id="selection-toolbar" class="selection-toolbar hidden">
-    <button id="btn-save-quote">✨ Citar frase</button>
-    <button id="btn-add-note">📝 Añadir nota</button>
+    <button id="btn-copy-quote">📋 Copiar</button>
+    <button id="btn-save-quote">✨ Citar</button>
+    <button id="btn-add-note">📝 Nota</button>
   </div>
 
   <!-- MODAL PARA AÑADIR NOTA -->
@@ -320,10 +321,15 @@
 
     <!-- VISTA 7: LECTOR DE CAPÍTULO -->
     <section id="view-reader" class="view">
+      <div class="reader-progress-bar"><div id="reader-progress-fill"></div></div>
       <div class="reader-nav">
         <button id="btn-back-index" class="m3-btn tonal">← Índice</button>
-        <span id="reader-progress-label" style="color:var(--muted); font-size:0.85rem;"></span>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <span id="reader-time-left" class="reader-time-badge"></span>
+          <select id="reader-cap-select" class="m3-input reader-cap-select" title="Saltar a capítulo"></select>
+        </div>
       </div>
+      <button id="btn-scroll-top" class="scroll-top-fab hidden" title="Volver arriba">↑</button>
 
       <article id="chapter-content" class="reader-body"></article>
 

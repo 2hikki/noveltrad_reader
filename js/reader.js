@@ -56,7 +56,16 @@ async function abrirCapitulo(novela, vol, listaCapitulos, idx, scrollRestaurar =
   }
 
   document.getElementById("chapter-content").innerHTML = html;
-  document.getElementById("reader-progress-label").textContent = `Vol. ${vol.numero} • ${idx + 1}/${listaCapitulos.length}`;
+  const totalPalabras = capData.parrafos.join(" ").trim().split(/\s+/).length;
+  estadoActual.minutosTotales = Math.max(1, Math.round(totalPalabras / 220));
+  document.getElementById("reader-time-left").textContent = `~${estadoActual.minutosTotales} min`;
+
+  const capSelect = document.getElementById("reader-cap-select");
+  capSelect.innerHTML = listaCapitulos.map((c, i) =>
+    `<option value="${i}" ${i === idx ? "selected" : ""}>Vol.${vol.numero} • Cap.${c.numero}</option>`
+  ).join("");
+  capSelect.onchange = (e) => abrirCapitulo(novela, vol, listaCapitulos, parseInt(e.target.value, 10), 0);
+
   document.getElementById("btn-back-index").onclick = () => abrirNovela(novela);
 
   const btnPrev = document.getElementById("btn-prev-cap");
@@ -86,6 +95,55 @@ document.addEventListener("selectionchange", () => {
     toolbar.classList.remove("hidden");
   } else {
     toolbar.classList.add("hidden");
+  }
+});
+
+document.getElementById("btn-copy-quote").addEventListener("click", async () => {
+  if (!seleccionActualTexto || !estadoActual.novela) return;
+  const capInfo = estadoActual.capitulosIndice[estadoActual.capIndex];
+  const citaFormateada = `«${seleccionActualTexto}» — ${estadoActual.novela.titulo_es} (Vol. ${estadoActual.volumen.numero}, Cap. ${capInfo.numero})`;
+  await navigator.clipboard.writeText(citaFormateada).catch(() => {});
+  const btn = document.getElementById("btn-copy-quote");
+  btn.textContent = "✓ Copiado";
+  setTimeout(() => {
+    btn.textContent = "📋 Copiar";
+    document.getElementById("selection-toolbar").classList.add("hidden");
+    window.getSelection().removeAllRanges();
+  }, 650);
+});
+
+document.getElementById("btn-scroll-top").addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+window.addEventListener("scroll", () => {
+  if (!document.getElementById("view-reader").classList.contains("active")) return;
+  const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+  const pct = Math.min(100, Math.max(0, (window.scrollY / maxScroll) * 100));
+  const fill = document.getElementById("reader-progress-fill");
+  if (fill) fill.style.width = `${pct}%`;
+
+  const restantes = Math.max(1, Math.ceil((estadoActual.minutosTotales || 1) * (1 - pct / 100)));
+  const timeEl = document.getElementById("reader-time-left");
+  if (timeEl) timeEl.textContent = pct >= 96 ? "Fin" : `~${restantes} min`;
+
+  const fab = document.getElementById("btn-scroll-top");
+  if (fab) fab.classList.toggle("hidden", window.scrollY < 450);
+});
+
+document.addEventListener("keydown", (e) => {
+  if (!document.getElementById("view-reader").classList.contains("active")) return;
+  if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) return;
+  if (!document.getElementById("note-modal").classList.contains("hidden")) return;
+
+  if (e.key === "ArrowLeft") {
+    const prev = document.getElementById("btn-prev-cap");
+    if (prev && !prev.disabled) prev.click();
+  } else if (e.key === "ArrowRight") {
+    const next = document.getElementById("btn-next-cap");
+    if (next && !next.disabled) next.click();
+  } else if (e.key === "Escape") {
+    document.getElementById("btn-back-index").click();
   }
 });
 
