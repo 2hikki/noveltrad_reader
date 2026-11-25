@@ -567,3 +567,16 @@ body {
   z-index: 35;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
 }
+
+.empty-state-art {
+  width: 68px;
+  height: 68px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  margin-bottom: 0.2rem;
+}

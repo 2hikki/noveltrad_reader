@@ -87,7 +87,7 @@ function renderizarListaDescargas() {
   const list = document.getElementById("downloaded-vols-list");
   const items = Object.values(obtenerDescargadosMap());
   if (!items.length) {
-    list.innerHTML = `<div class="kaomoji-empty"><div class="kaomoji-face">(￣o￣) . z Z</div><div class="kaomoji-text">No hay volúmenes descargados sin conexión</div></div>`;
+    list.innerHTML = `<div class="kaomoji-empty"><div class="empty-state-art"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m8 11 4 4 4-4"/><path d="M5 19h14"/></svg></div><div class="kaomoji-text">No tienes volúmenes guardados sin conexión</div></div>`;
     return;
   }
   list.innerHTML = items.map(item => `

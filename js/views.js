@@ -220,8 +220,8 @@ function renderizarBiblioteca() {
   if (filtradas.length === 0) {
     grid.innerHTML = `
       <div class="kaomoji-empty">
-        <div class="kaomoji-face">Σ(ಠ_ಠ)</div>
-        <div class="kaomoji-text">${slugs.length === 0 ? "Tu biblioteca está vacía" : "La categoría está vacía"}</div>
+        <div class="empty-state-art"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg></div>
+        <div class="kaomoji-text">${slugs.length === 0 ? "Tu estantería espera su primera historia" : "No hay novelas en esta categoría"}</div>
         ${slugs.length === 0 ? `<button class="m3-btn filled" onclick="cambiarTab('explore')">Explorar catálogo</button>` : ""}
       </div>
     `;
@@ -239,7 +239,7 @@ function renderizarExplorar() {
 
   grid.innerHTML = "";
   if (!filtradas.length) {
-    grid.innerHTML = `<div class="kaomoji-empty"><div class="kaomoji-face">(･_･?)</div><div class="kaomoji-text">No se encontraron resultados</div></div>`;
+    grid.innerHTML = `<div class="kaomoji-empty"><div class="empty-state-art"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/><path d="M9 11h4"/></svg></div><div class="kaomoji-text">No se encontraron resultados</div></div>`;
     return;
   }
   filtradas.forEach(n => grid.appendChild(crearTarjetaMihon(n, true)));
@@ -279,7 +279,7 @@ function renderizarActualizaciones() {
     `;
   });
 
-  feed.innerHTML = html || `<div class="kaomoji-empty"><div class="kaomoji-face">(－_－) zzZ</div><div class="kaomoji-text">Sin actualizaciones recientes</div></div>`;
+  feed.innerHTML = html || `<div class="kaomoji-empty"><div class="empty-state-art"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div><div class="kaomoji-text">Sin actualizaciones recientes</div></div>`;
 }
 
 function abrirNovelaPorSlug(slug) {
@@ -308,7 +308,7 @@ function renderizarHistorial() {
   const list = document.getElementById("history-list");
   const historial = JSON.parse(localStorage.getItem("nt_historial") || "[]");
   if (!historial.length) {
-    list.innerHTML = `<div class="kaomoji-empty"><div class="kaomoji-face">(・_・)</div><div class="kaomoji-text">Nada leído recientemente</div></div>`;
+    list.innerHTML = `<div class="kaomoji-empty"><div class="empty-state-art"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg></div><div class="kaomoji-text">Aún no has iniciado ninguna lectura</div></div>`;
     return;
   }
   list.innerHTML = historial.map((h, i) => `
