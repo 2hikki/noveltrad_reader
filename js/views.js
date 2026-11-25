@@ -472,6 +472,7 @@ function renderizarBannerUltimaLectura() {
 }
 
 async function abrirNovela(novela) {
+  if (typeof window.aplicarGradientePortada === "function") window.aplicarGradientePortada(novela.portada);
   estadoActual.novela = novela;
   document.getElementById("btn-novel-back").onclick = () => cambiarTab(tabAnterior);
 

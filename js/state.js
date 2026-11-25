@@ -1,5 +1,5 @@
 
-const TEMAS_MECENAS = ["sakura", "eink", "antique", "cyber"];
+const TEMAS_MECENAS = ["sakura", "eink", "antique", "cyber", "grad-aurora", "grad-sunset", "grad-abyss", "grad-forest", "grad-quantum"];
 const FUENTES_MECENAS = ["Literata", "Crimson Pro", "Atkinson Hyperlegible"];
 
 function esFuncionMecenasBloqueada(valor) {
@@ -153,6 +153,78 @@ document.addEventListener("click", (e) => {
   if (TEMAS_MECENAS.includes(val) && !window.esMecenas) {
     e.stopImmediatePropagation();
     e.preventDefault();
+    if (typeof abrirModalDonaciones === "function") abrirModalDonaciones();
+  }
+}, true);
+
+
+// ==========================================
+// EXTRACTOR DE PALETA DE PORTADA (MODO CAMALEÓN MECENAS)
+// ==========================================
+window.aplicarGradientePortada = function (imgUrl) {
+  const chk = document.getElementById("chk-dynamic-cover-grad");
+  const activo = window.esMecenas && prefs && prefs.chameleonGrad;
+  if (!activo || !imgUrl) {
+    document.body.classList.remove("chameleon-active");
+    return;
+  }
+
+  const img = new Image();
+  img.crossOrigin = "Anonymous";
+  img.onload = () => {
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = 16;
+      canvas.height = 16;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, 16, 16);
+      const data = ctx.getImageData(0, 0, 16, 16).data;
+
+      let r1 = 0, g1 = 0, b1 = 0, c1 = 0;
+      let r2 = 0, g2 = 0, b2 = 0, c2 = 0;
+
+      for (let y = 0; y < 16; y++) {
+        for (let x = 0; x < 16; x++) {
+          const i = (y * 16 + x) * 4;
+          // Oscurecer a rango seguro (28% del brillo original) para proteger legibilidad
+          const r = Math.min(72, Math.round(data[i] * 0.28));
+          const g = Math.min(72, Math.round(data[i + 1] * 0.28));
+          const b = Math.min(82, Math.round(data[i + 2] * 0.30));
+          if (y < 8) { r1 += r; g1 += g; b1 += b; c1++; }
+          else { r2 += r; g2 += g; b2 += b; c2++; }
+        }
+      }
+
+      const col1 = `rgb(${Math.round(r1/c1)}, ${Math.round(g1/c1)}, ${Math.round(b1/c1)})`;
+      const col2 = `rgb(${Math.round(r2/c2)}, ${Math.round(g2/c2)}, ${Math.round(b2/c2)})`;
+      document.documentElement.style.setProperty("--dyn-c1", col1);
+      document.documentElement.style.setProperty("--dyn-c2", col2);
+      document.body.classList.add("chameleon-active");
+    } catch (e) {
+      document.body.classList.remove("chameleon-active");
+    }
+  };
+  img.onerror = () => document.body.classList.remove("chameleon-active");
+  img.src = imgUrl;
+};
+
+document.addEventListener("change", (e) => {
+  if (e.target && e.target.id === "chk-dynamic-cover-grad") {
+    if (!window.esMecenas) {
+      e.target.checked = false;
+      if (typeof abrirModalDonaciones === "function") abrirModalDonaciones();
+      return;
+    }
+    prefs.chameleonGrad = e.target.checked;
+    localStorage.setItem("nt_prefs", JSON.stringify(prefs));
+    if (!prefs.chameleonGrad) document.body.classList.remove("chameleon-active");
+  }
+});
+
+// Bloquear selector RGB libre si no es Mecenas
+document.addEventListener("input", (e) => {
+  if (e.target && (e.target.id === "custom-bg-color" || e.target.id === "input-custom-bg") && !window.esMecenas) {
+    e.stopImmediatePropagation();
     if (typeof abrirModalDonaciones === "function") abrirModalDonaciones();
   }
 }, true);

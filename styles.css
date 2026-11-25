@@ -852,3 +852,79 @@ body {
   --accent: #38bdf8;
   --border: #2e2659;
 }
+
+/* TRANSICIÓN SUAVE DE FONDOS Y GRADIENTES */
+body, #app-container, .reader-view {
+  transition: background 0.55s ease, background-color 0.45s ease;
+}
+
+/* 5 GRADIENTES EXCLUSIVOS DE MECENAS */
+:root[data-theme="grad-aurora"] {
+  --bg: #0c1d24;
+  --surface: rgba(20, 42, 52, 0.85);
+  --surface-high: rgba(30, 62, 76, 0.9);
+  --text: #ecfeff;
+  --muted: #99d5e0;
+  --accent: #22d3ee;
+  --border: rgba(34, 211, 238, 0.22);
+}
+:root[data-theme="grad-aurora"] body {
+  background: radial-gradient(circle at 15% 10%, #134e4a 0%, #0f172a 55%, #1e1b4b 100%) fixed;
+}
+
+:root[data-theme="grad-sunset"] {
+  --bg: #231118;
+  --surface: rgba(48, 24, 32, 0.85);
+  --surface-high: rgba(68, 34, 44, 0.9);
+  --text: #fff7ed;
+  --muted: #eab8a4;
+  --accent: #fb923c;
+  --border: rgba(251, 146, 60, 0.24);
+}
+:root[data-theme="grad-sunset"] body {
+  background: linear-gradient(145deg, #3b1224 0%, #27131e 48%, #361c12 100%) fixed;
+}
+
+:root[data-theme="grad-abyss"] {
+  --bg: #080d1a;
+  --surface: rgba(15, 25, 48, 0.86);
+  --surface-high: rgba(24, 39, 74, 0.92);
+  --text: #eff6ff;
+  --muted: #93b4e0;
+  --accent: #60a5fa;
+  --border: rgba(96, 165, 250, 0.22);
+}
+:root[data-theme="grad-abyss"] body {
+  background: radial-gradient(circle at 80% 15%, #1e3a8a 0%, #090e1f 55%, #050811 100%) fixed;
+}
+
+:root[data-theme="grad-forest"] {
+  --bg: #0b1913;
+  --surface: rgba(18, 38, 29, 0.86);
+  --surface-high: rgba(27, 56, 43, 0.92);
+  --text: #f0fdf4;
+  --muted: #9bd1b3;
+  --accent: #34d399;
+  --border: rgba(52, 211, 153, 0.22);
+}
+:root[data-theme="grad-forest"] body {
+  background: linear-gradient(155deg, #064e3b 0%, #0d1f18 52%, #17251e 100%) fixed;
+}
+
+:root[data-theme="grad-quantum"] {
+  --bg: #160c21;
+  --surface: rgba(34, 20, 50, 0.86);
+  --surface-high: rgba(50, 30, 72, 0.92);
+  --text: #faf5ff;
+  --muted: #cbb2e6;
+  --accent: #e879f9;
+  --border: rgba(232, 121, 249, 0.24);
+}
+:root[data-theme="grad-quantum"] body {
+  background: radial-gradient(circle at 20% 20%, #581c87 0%, #1c102b 52%, #111827 100%) fixed;
+}
+
+/* MODO CAMALEÓN DINÁMICO POR PORTADA / VOLUMEN */
+body.chameleon-active {
+  background: linear-gradient(160deg, var(--dyn-c1, #1e1b2e) 0%, var(--dyn-c2, #141218) 52%, var(--bg) 100%) fixed !important;
+}
