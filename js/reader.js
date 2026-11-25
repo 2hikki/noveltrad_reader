@@ -1,12 +1,72 @@
 // ==========================================
 // 7. LECTOR, COMENTARIOS GISCUS Y CITAS
 // ==========================================
+function resolverRutaIlustracion(rawSrc) {
+  const src = String(rawSrc || "").trim();
+  if (!src) return "";
+  if (/^(https?:\/\/|data:|\/)/i.test(src)) return src;
+  const baseVol = estadoActual?.volumen?.ruta_indice
+    ? estadoActual.volumen.ruta_indice.replace(/[^/\\]+$/, "")
+    : "";
+  return baseVol ? `${baseVol}${src.replace(/^\.?\//, "")}` : src;
+}
+
 function formatearParrafo(texto) {
   const limpio = texto.trim();
+  if (!limpio) return "";
+
+  // Detectar marcadores [img: ruta] o [[ilustracion: ruta]] o URL/ruta directa de imagen
+  const tagMatch = limpio.match(/^\[?\[(?:img|ilustracion|ilustración|imagen)\s*:\s*([^\]\|]+)(?:\s*\|\s*([^\]]+))?\]?\]$/i);
+  const directImg = !tagMatch && /^(?:https?:\/\/|\.\/?|[a-z0-9_\-/]+\/)[^\s]+\.(?:png|jpe?g|webp|gif)(?:\?.*)?$/i.test(limpio);
+
+  if (tagMatch || directImg) {
+    const rawSrc = tagMatch ? tagMatch[1] : limpio;
+    const pie = tagMatch && tagMatch[2] ? tagMatch[2].trim() : "";
+    const finalSrc = resolverRutaIlustracion(rawSrc);
+    const safeSrc = finalSrc.replace(/"/g, "&quot;");
+    const safePie = pie.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return `
+      <figure class="novel-illustration" data-full-src="${safeSrc}">
+        <img src="${safeSrc}" alt="${safePie || "Ilustración del capítulo"}" loading="lazy" onclick="abrirLightboxIlustracion(this.src, this.alt)" />
+        ${safePie ? `<figcaption>${safePie}</figcaption>` : ""}
+      </figure>
+    `;
+  }
+
   if (/^(\*\s*){3,}$/.test(limpio) || limpio === "***") return `<p class="scene-break">* * *</p>`;
   const esc = limpio.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\*([^*]+)\*/g, "<em>$1</em>");
   return `<p>${esc}</p>`;
 }
+
+window.abrirLightboxIlustracion = function (src, alt = "Ilustración") {
+  if (!src) return;
+  let lb = document.getElementById("nt-illustration-lightbox");
+  if (!lb) {
+    lb = document.createElement("div");
+    lb.id = "nt-illustration-lightbox";
+    lb.className = "nt-lightbox hidden";
+    lb.innerHTML = `
+      <button type="button" class="nt-lightbox-close" aria-label="Cerrar ilustración">&times;</button>
+      <img src="" alt="" />
+      <div class="nt-lightbox-caption"></div>
+    `;
+    lb.addEventListener("click", (e) => {
+      if (e.target === lb || e.target.closest(".nt-lightbox-close")) {
+        lb.classList.add("hidden");
+      }
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !lb.classList.contains("hidden")) {
+        lb.classList.add("hidden");
+      }
+    });
+    document.body.appendChild(lb);
+  }
+  lb.querySelector("img").src = src;
+  lb.querySelector("img").alt = alt;
+  lb.querySelector(".nt-lightbox-caption").textContent = alt;
+  lb.classList.remove("hidden");
+};
 
 function cargarComentariosCapitulo(identificadorHilo) {
   const contenedor = document.getElementById("comments-thread");
