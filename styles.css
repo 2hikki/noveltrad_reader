@@ -685,3 +685,96 @@ body {
   padding: 0.18rem 0.55rem;
   border-radius: 999px;
 }
+
+/* MODAL DE BIENVENIDA */
+.welcome-card {
+  width: min(490px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  gap: 1rem;
+}
+
+.welcome-hero {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.welcome-emblem {
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+}
+
+.welcome-hero h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.welcome-subtitle {
+  font-size: 0.86rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.welcome-features {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.welcome-feat-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: var(--bg);
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.welcome-feat-icon {
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+.welcome-feat-item div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.welcome-feat-item strong {
+  font-size: 0.86rem;
+  color: var(--text);
+}
+
+.welcome-feat-item small {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.welcome-disclaimer {
+  background: var(--surface-high);
+  border-left: 3px solid var(--accent);
+  padding: 0.65rem 0.8rem;
+  border-radius: 10px;
+  font-size: 0.76rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.welcome-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}

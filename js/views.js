@@ -582,3 +582,23 @@ document.getElementById("donate-modal").addEventListener("click", (e) => {
     document.getElementById("donate-modal").classList.add("hidden");
   }
 });
+
+function abrirModalBienvenida() {
+  document.getElementById("welcome-modal").classList.remove("hidden");
+}
+
+function cerrarModalBienvenida(irAExplorar = false) {
+  localStorage.setItem("nt_bienvenida_vista", "true");
+  document.getElementById("welcome-modal").classList.add("hidden");
+  if (irAExplorar) cambiarTab("explore");
+}
+
+document.getElementById("btn-welcome-start").addEventListener("click", () => {
+  cerrarModalBienvenida(true);
+});
+
+document.getElementById("welcome-modal").addEventListener("click", (e) => {
+  if (e.target.id === "welcome-modal") {
+    cerrarModalBienvenida(false);
+  }
+});

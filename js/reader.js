@@ -273,6 +273,9 @@ async function iniciarApp() {
     catalogoData = (await (await fetch("output/catalogo.json")).json()).novelas || [];
     try { noticiasData = (await (await fetch("output/noticias.json")).json()).noticias || []; } catch { noticiasData = []; }
     cambiarTab(obtenerBibliotecaSlugs().length === 0 && catalogoData.length > 0 ? "explore" : "library");
+    if (!localStorage.getItem("nt_bienvenida_vista")) {
+      abrirModalBienvenida();
+    }
   } catch {
     document.getElementById("library-grid").innerHTML = `<div class="kaomoji-empty"><div class="empty-state-art"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg></div><div class="kaomoji-text">Error cargando catalogo.json</div></div>`;
   }

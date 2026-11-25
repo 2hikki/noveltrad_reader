@@ -195,6 +195,58 @@
     </div>
   </div>
 
+    <!-- MODAL DE BIENVENIDA (PRIMERA VISITA) -->
+  <div id="welcome-modal" class="modal hidden">
+    <div class="modal-card welcome-card">
+      <div class="welcome-hero">
+        <div class="welcome-emblem">
+          <svg viewBox="0 0 64 64" width="54" height="54" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 18C26 14 16 13 10 15V47C16 45 26 46 32 50C38 46 48 45 54 47V15C48 13 38 14 32 18Z" fill="var(--surface-high)" stroke="var(--accent)" stroke-width="3.2" stroke-linejoin="round"/>
+            <path d="M32 18V50" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+            <path d="M41 14V29L44.5 26L48 29V14" fill="var(--accent)"/>
+            <path d="M19 25H26M19 32H25M19 39H24" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
+          </svg>
+        </div>
+        <h2>Bienvenido a NovelaTrad</h2>
+        <p class="welcome-subtitle">
+          Tu rincón de lectura de novelas ligeras traducidas al español, diseñado con cariño para leer cómodo en cualquier dispositivo.
+        </p>
+      </div>
+
+      <div class="welcome-features">
+        <div class="welcome-feat-item">
+          <span class="welcome-feat-icon">📚</span>
+          <div>
+            <strong>Tu estantería personal</strong>
+            <small>Guarda obras en tu Biblioteca, organízalas por categorías y retoma exactamente donde lo dejaste.</small>
+          </div>
+        </div>
+        <div class="welcome-feat-item">
+          <span class="welcome-feat-icon">📥</span>
+          <div>
+            <strong>Lectura sin conexión</strong>
+            <small>Descarga volúmenes completos directamente en tu navegador para leer en el transporte o sin datos.</small>
+          </div>
+        </div>
+        <div class="welcome-feat-item">
+          <span class="welcome-feat-icon">🎨</span>
+          <div>
+            <strong>Lector personalizable</strong>
+            <small>Cambia tipografías, elige un fondo RGB a tu gusto, guarda citas o pon música ambiental.</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="welcome-disclaimer">
+        <strong>Aviso / Disclaimer:</strong> Este es un proyecto independiente de traducción hecha por fans, totalmente gratuito y sin ánimo de lucro. Todos los derechos de las obras pertenecen a sus respectivos autores, ilustradores y editoriales originales. Si alguna novela recibe licencia oficial en tu idioma, por favor apóyala.
+      </div>
+
+      <div class="welcome-actions">
+        <button id="btn-welcome-start" class="m3-btn filled" style="width:100%; padding:0.75rem;">Empezar a explorar</button>
+      </div>
+    </div>
+  </div>
+
   <main id="app-container">
     <!-- VISTA 1: BIBLIOTECA ESTILO MIHON -->
     <section id="view-library" class="view active">
@@ -345,6 +397,16 @@
           <div class="more-text">
             <div class="more-title">Apoyar el proyecto</div>
             <div class="more-desc">Invítame un café para mantener las traducciones</div>
+          </div>
+        </button>
+
+                <button class="more-item" onclick="abrirModalBienvenida()">
+          <div class="more-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <div class="more-text">
+            <div class="more-title">Guía de bienvenida</div>
+            <div class="more-desc">Información sobre la web, funciones y aviso legal</div>
           </div>
         </button>
 
