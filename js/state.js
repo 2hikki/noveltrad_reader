@@ -228,3 +228,37 @@ document.addEventListener("input", (e) => {
     if (typeof abrirModalDonaciones === "function") abrirModalDonaciones();
   }
 }, true);
+
+
+// ==========================================
+// SELECTOR VISUAL DE TIPOGRAFÍAS CON PREVIEW
+// ==========================================
+function sincronizarTarjetasFuente() {
+  const actual = (prefs && prefs.font) || "'Lora', Georgia, serif";
+  const preview = document.getElementById("font-live-preview");
+  if (preview) preview.style.fontFamily = actual;
+
+  document.querySelectorAll(".font-card-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.fontVal === actual);
+  });
+}
+
+document.addEventListener("click", (e) => {
+  const btnFont = e.target.closest(".font-card-btn");
+  if (!btnFont) return;
+  const val = btnFont.dataset.fontVal;
+
+  if (esFuncionMecenasBloqueada(val)) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    if (typeof abrirModalDonaciones === "function") abrirModalDonaciones();
+    return;
+  }
+
+  prefs.font = val;
+  localStorage.setItem("nt_prefs", JSON.stringify(prefs));
+  if (typeof aplicarPreferencias === "function") aplicarPreferencias();
+  sincronizarTarjetasFuente();
+}, true);
+
+document.addEventListener("DOMContentLoaded", sincronizarTarjetasFuente);
