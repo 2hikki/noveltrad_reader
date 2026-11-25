@@ -659,3 +659,29 @@ body {
   font-size: 0.85rem;
   color: var(--muted);
 }
+
+/* ETIQUETAS Y CONTROLES DE EXPLORAR */
+.explore-controls-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  margin: 0 -1.15rem 1rem;
+  padding: 0 1.15rem;
+}
+
+.novel-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.45rem 0 0.65rem;
+}
+
+.novel-tag-pill {
+  background: var(--surface-high);
+  color: var(--accent);
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+}

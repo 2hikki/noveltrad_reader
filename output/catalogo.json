@@ -17,6 +17,11 @@
           "ruta_indice": "output/novelas/deja-vute-betrayal-begets-new-beginnings/vol-01/indice.json",
           "portada": "output/novelas/deja-vute-betrayal-begets-new-beginnings/vol-01/portada.jpg"
         }
+      ],
+      "etiquetas": [
+        "Fantasía",
+        "Drama",
+        "Regresión"
       ]
     },
     {
@@ -52,6 +57,12 @@
           "ruta_indice": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-03/indice.json",
           "portada": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-03/portada.jpg"
         }
+      ],
+      "etiquetas": [
+        "Comedia Romántica",
+        "Regresión",
+        "Drama",
+        "Traducción Importada"
       ]
     }
   ]

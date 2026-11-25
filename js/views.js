@@ -230,12 +230,54 @@ function renderizarBiblioteca() {
   filtradas.forEach(n => grid.appendChild(crearTarjetaMihon(n, false)));
 }
 
+function obtenerEtiquetasNovela(novela) {
+  if (Array.isArray(novela.etiquetas) && novela.etiquetas.length) return novela.etiquetas;
+  if (novela.tono) return novela.tono.split(/[,/•|-]/).map(t => t.trim()).filter(Boolean);
+  return [];
+}
+
+function renderizarTabsEtiquetasExplore() {
+  const bar = document.getElementById("explore-tag-tabs");
+  if (!bar) return;
+  const setTags = new Set();
+  catalogoData.forEach(n => obtenerEtiquetasNovela(n).forEach(t => setTags.add(t)));
+  const tags = ["Todas", ...Array.from(setTags).sort((a, b) => a.localeCompare(b, "es"))];
+  if (!tags.includes(etiquetaExploreActiva)) etiquetaExploreActiva = "Todas";
+
+  bar.innerHTML = tags.map(t => `
+    <button class="cat-tab ${t === etiquetaExploreActiva ? "active" : ""}" onclick="seleccionarEtiquetaExplore('${t.replace(/'/g, "\'")}')">${t}</button>
+  `).join("");
+}
+
+function seleccionarEtiquetaExplore(tag) {
+  etiquetaExploreActiva = tag;
+  renderizarTabsEtiquetasExplore();
+  renderizarExplorar();
+}
+
+document.getElementById("btn-sort-explore").addEventListener("click", () => {
+  ordenExploreAsc = !ordenExploreAsc;
+  document.getElementById("btn-sort-explore").textContent = ordenExploreAsc ? "A-Z ↑" : "Z-A ↓";
+  renderizarExplorar();
+});
+
 function renderizarExplorar() {
+  renderizarTabsEtiquetasExplore();
   const grid = document.getElementById("explore-grid");
   const q = filtroBusqueda.toLowerCase().trim();
-  const filtradas = catalogoData.filter(n =>
-    !q || n.titulo_es.toLowerCase().includes(q) || (n.tono && n.tono.toLowerCase().includes(q)) || n.sinopsis.toLowerCase().includes(q)
-  );
+  const filtradas = catalogoData
+    .filter(n => {
+      const tags = obtenerEtiquetasNovela(n);
+      if (etiquetaExploreActiva !== "Todas" && !tags.includes(etiquetaExploreActiva)) return false;
+      if (!q) return true;
+      return n.titulo_es.toLowerCase().includes(q) ||
+             tags.some(t => t.toLowerCase().includes(q)) ||
+             n.sinopsis.toLowerCase().includes(q);
+    })
+    .sort((a, b) => {
+      const cmp = a.titulo_es.localeCompare(b.titulo_es, "es", { sensitivity: "base" });
+      return ordenExploreAsc ? cmp : -cmp;
+    });
 
   grid.innerHTML = "";
   if (!filtradas.length) {
@@ -432,7 +474,10 @@ async function abrirNovela(novela) {
       ${novela.portada ? `<img src="${novela.portada}" alt="${novela.titulo_es}" class="novel-hero-cover" />` : ""}
       <div class="novel-hero-info">
         <h2>${novela.titulo_es}</h2>
-        <span style="color:var(--accent); font-size:0.82rem;">${novela.tono || "Novela Ligera"}</span>
+        <div class="novel-tags-row">
+          ${(obtenerEtiquetasNovela(novela).length ? obtenerEtiquetasNovela(novela) : ["Novela Ligera"])
+            .map(t => `<span class="novel-tag-pill">${t}</span>`).join("")}
+        </div>
         <p style="color:var(--muted); margin:0.5rem 0 0.9rem; font-size:0.88rem;">${novela.sinopsis}</p>
         <button id="btn-smart-read" class="m3-btn filled">▶ Continuar</button>
       </div>
