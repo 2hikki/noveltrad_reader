@@ -25,34 +25,38 @@
       "titulo_original": "La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. [Kyuden Translations]",
       "sinopsis": "Edición en español de La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. [Kyuden Translations].",
       "tono": "Traducción importada",
-      "portada": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-01/portada.jpg",
-      "ultima_actualizacion": "2026-11-25 13:19:15",
+      "portada": "https://cdn.jsdelivr.net/gh/2hikki/noveltrad-data-01@main/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-01/portada.jpg",
+      "ultima_actualizacion": "2026-11-25 13:50:46",
       "volumenes": [
         {
           "clave": "vol-01",
           "numero": 1,
           "total_capitulos": 22,
-          "fecha_subida": "2026-11-25 13:19:14",
-          "ruta_indice": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-01/indice.json",
-          "portada": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-01/portada.jpg"
+          "fecha_subida": "2026-11-25 13:50:46",
+          "ruta_indice": "https://cdn.jsdelivr.net/gh/2hikki/noveltrad-data-01@main/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-01/indice.json",
+          "portada": "https://cdn.jsdelivr.net/gh/2hikki/noveltrad-data-01@main/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-01/portada.jpg",
+          "repo_origen": "noveltrad-data-01"
         },
         {
           "clave": "vol-02",
           "numero": 2,
           "total_capitulos": 23,
-          "fecha_subida": "2026-11-25 13:19:14",
-          "ruta_indice": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-02/indice.json",
-          "portada": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-02/portada.jpg"
+          "fecha_subida": "2026-11-25 13:50:46",
+          "ruta_indice": "https://cdn.jsdelivr.net/gh/2hikki/noveltrad-data-01@main/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-02/indice.json",
+          "portada": "https://cdn.jsdelivr.net/gh/2hikki/noveltrad-data-01@main/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-02/portada.jpg",
+          "repo_origen": "noveltrad-data-01"
         },
         {
           "clave": "vol-03",
           "numero": 3,
           "total_capitulos": 29,
-          "fecha_subida": "2026-11-25 13:19:15",
-          "ruta_indice": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-03/indice.json",
-          "portada": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-03/portada.jpg"
+          "fecha_subida": "2026-11-25 13:50:46",
+          "ruta_indice": "https://cdn.jsdelivr.net/gh/2hikki/noveltrad-data-01@main/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-03/indice.json",
+          "portada": "https://cdn.jsdelivr.net/gh/2hikki/noveltrad-data-01@main/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-03/portada.jpg",
+          "repo_origen": "noveltrad-data-01"
         }
-      ]
+      ],
+      "repo_origen": "noveltrad-data-01"
     }
   ]
 }

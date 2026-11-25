@@ -90,7 +90,7 @@ async function eliminarVolumenOffline(slug, volClave) {
   const info = mapa[`${slug}_${volClave}`];
   const cache = await caches.open(OFFLINE_CACHE_NAME);
   for (const req of await cache.keys()) {
-    if (req.url.includes(`/${slug}/${volClave}/`)) await cache.delete(req);
+    if (req.url.includes(`/${slug}/${volClave}/`) || req.url.includes(`/novelas/${slug}/${volClave}/`)) await cache.delete(req);
   }
   delete mapa[`${slug}_${volClave}`];
   guardarDescargadosMap(mapa);

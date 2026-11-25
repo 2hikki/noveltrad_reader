@@ -1,0 +1,52 @@
+{
+  "usuario_github": "2hikki",
+  "repos": [
+    {
+      "nombre": "noveltrad-data-01",
+      "rama": "main",
+      "novelas": [
+        {
+          "slug": "la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations",
+          "titulo_es": "La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. [Kyuden Translations]",
+          "titulo_original": "La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. [Kyuden Translations]",
+          "sinopsis": "Edición en español de La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. [Kyuden Translations].",
+          "tono": "Traducción importada",
+          "ultima_actualizacion": "2026-11-25 13:50:46",
+          "volumenes": [
+            {
+              "clave": "vol-01",
+              "numero": 1,
+              "total_capitulos": 22,
+              "ext_portada": "jpg",
+              "fecha_subida": "2026-11-25 13:50:46"
+            },
+            {
+              "clave": "vol-02",
+              "numero": 2,
+              "total_capitulos": 23,
+              "ext_portada": "jpg",
+              "fecha_subida": "2026-11-25 13:50:46"
+            },
+            {
+              "clave": "vol-03",
+              "numero": 3,
+              "total_capitulos": 29,
+              "ext_portada": "jpg",
+              "fecha_subida": "2026-11-25 13:50:46"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "nombre": "noveltrad-data-02",
+      "rama": "main",
+      "novelas": []
+    },
+    {
+      "nombre": "noveltrad-data-03",
+      "rama": "main",
+      "novelas": []
+    }
+  ]
+}
