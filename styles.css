@@ -1043,3 +1043,73 @@ body.chameleon-active {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px var(--accent);
 }
+
+
+/* === FIX GRADIENTES Y MODO CAMALEÓN EN TODAS LAS VISTAS === */
+:root[data-theme="grad-aurora"] body,
+:root[data-theme="grad-aurora"] #app-container,
+:root[data-theme="grad-aurora"] .reader-view,
+:root[data-theme="grad-aurora"] main {
+  background: radial-gradient(circle at 15% 10%, #134e4a 0%, #0f172a 55%, #1e1b4b 100%) fixed !important;
+}
+:root[data-theme="grad-sunset"] body,
+:root[data-theme="grad-sunset"] #app-container,
+:root[data-theme="grad-sunset"] .reader-view,
+:root[data-theme="grad-sunset"] main {
+  background: linear-gradient(145deg, #3b1224 0%, #27131e 48%, #361c12 100%) fixed !important;
+}
+:root[data-theme="grad-abyss"] body,
+:root[data-theme="grad-abyss"] #app-container,
+:root[data-theme="grad-abyss"] .reader-view,
+:root[data-theme="grad-abyss"] main {
+  background: radial-gradient(circle at 80% 15%, #1e3a8a 0%, #090e1f 55%, #050811 100%) fixed !important;
+}
+:root[data-theme="grad-forest"] body,
+:root[data-theme="grad-forest"] #app-container,
+:root[data-theme="grad-forest"] .reader-view,
+:root[data-theme="grad-forest"] main {
+  background: linear-gradient(155deg, #0d2118 0%, #132a20 50%, #1a2e22 100%) fixed !important;
+}
+:root[data-theme="grad-sakura"] body,
+:root[data-theme="grad-sakura"] #app-container,
+:root[data-theme="grad-sakura"] .reader-view,
+:root[data-theme="grad-sakura"] main {
+  background: linear-gradient(145deg, #2d1424 0%, #1f151c 52%, #2a1826 100%) fixed !important;
+}
+
+body.chameleon-active,
+body.chameleon-active #app-container,
+body.chameleon-active .reader-view,
+body.chameleon-active main {
+  background: linear-gradient(155deg, var(--dyn-c1, #1e1b4b) 0%, var(--dyn-c2, #0f172a) 100%) fixed !important;
+}
+
+/* Asegurar que el cajón de ajustes quede por encima del lector */
+#settings-drawer {
+  z-index: 9999 !important;
+}
+
+/* Botón rápido Aa dentro del lector */
+#btn-reader-aa {
+  position: fixed;
+  top: 12px;
+  right: 14px;
+  z-index: 9990;
+  background: var(--surface-high, rgba(30, 30, 46, 0.92));
+  color: var(--accent, #d0bcff);
+  border: 1px solid var(--border, rgba(255,255,255,0.16));
+  border-radius: 999px;
+  padding: 6px 13px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+  display: none;
+  align-items: center;
+  gap: 5px;
+}
+#btn-reader-aa:hover {
+  transform: scale(1.04);
+}

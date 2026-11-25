@@ -162,10 +162,30 @@ document.addEventListener("click", (e) => {
 // EXTRACTOR DE PALETA DE PORTADA (MODO CAMALEÓN MECENAS)
 // ==========================================
 window.aplicarGradientePortada = function (imgUrl) {
-  const chk = document.getElementById("chk-dynamic-cover-grad");
-  const activo = window.esMecenas && prefs && prefs.chameleonGrad;
-  if (!activo || !imgUrl) {
+  if (imgUrl) window._ultimaPortadaCamaleon = imgUrl;
+  const targetUrl = imgUrl || window._ultimaPortadaCamaleon || document.querySelector(".detail-cover img, .novel-cover img, img[src*='cover'], img[src*='portada']")?.src;
+  const activo = window.esMecenas && typeof prefs !== "undefined" && prefs.chameleonGrad;
+  if (!activo) {
     document.body.classList.remove("chameleon-active");
+    return;
+  }
+
+  const aplicarFallbackHash = (seedStr) => {
+    let h = 2166136261;
+    const str = String(seedStr || "noveltrad");
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    const hue1 = Math.abs(h) % 360;
+    const hue2 = (hue1 + 38) % 360;
+    document.documentElement.style.setProperty("--dyn-c1", `hsl(${hue1}, 42%, 16%)`);
+    document.documentElement.style.setProperty("--dyn-c2", `hsl(${hue2}, 38%, 11%)`);
+    document.body.classList.add("chameleon-active");
+  };
+
+  if (!targetUrl) {
+    aplicarFallbackHash(document.title);
     return;
   }
 
@@ -179,33 +199,26 @@ window.aplicarGradientePortada = function (imgUrl) {
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0, 16, 16);
       const data = ctx.getImageData(0, 0, 16, 16).data;
-
-      let r1 = 0, g1 = 0, b1 = 0, c1 = 0;
-      let r2 = 0, g2 = 0, b2 = 0, c2 = 0;
-
+      let r1 = 0, g1 = 0, b1 = 0, c1 = 0, r2 = 0, g2 = 0, b2 = 0, c2 = 0;
       for (let y = 0; y < 16; y++) {
         for (let x = 0; x < 16; x++) {
           const i = (y * 16 + x) * 4;
-          // Oscurecer a rango seguro (28% del brillo original) para proteger legibilidad
-          const r = Math.min(72, Math.round(data[i] * 0.28));
-          const g = Math.min(72, Math.round(data[i + 1] * 0.28));
-          const b = Math.min(82, Math.round(data[i + 2] * 0.30));
+          const r = Math.min(76, Math.round(data[i] * 0.30));
+          const g = Math.min(76, Math.round(data[i + 1] * 0.30));
+          const b = Math.min(88, Math.round(data[i + 2] * 0.32));
           if (y < 8) { r1 += r; g1 += g; b1 += b; c1++; }
           else { r2 += r; g2 += g; b2 += b; c2++; }
         }
       }
-
-      const col1 = `rgb(${Math.round(r1/c1)}, ${Math.round(g1/c1)}, ${Math.round(b1/c1)})`;
-      const col2 = `rgb(${Math.round(r2/c2)}, ${Math.round(g2/c2)}, ${Math.round(b2/c2)})`;
-      document.documentElement.style.setProperty("--dyn-c1", col1);
-      document.documentElement.style.setProperty("--dyn-c2", col2);
+      document.documentElement.style.setProperty("--dyn-c1", `rgb(${Math.round(r1/c1)}, ${Math.round(g1/c1)}, ${Math.round(b1/c1)})`);
+      document.documentElement.style.setProperty("--dyn-c2", `rgb(${Math.round(r2/c2)}, ${Math.round(g2/c2)}, ${Math.round(b2/c2)})`);
       document.body.classList.add("chameleon-active");
     } catch (e) {
-      document.body.classList.remove("chameleon-active");
+      aplicarFallbackHash(targetUrl);
     }
   };
-  img.onerror = () => document.body.classList.remove("chameleon-active");
-  img.src = imgUrl;
+  img.onerror = () => aplicarFallbackHash(targetUrl);
+  img.src = targetUrl;
 };
 
 document.addEventListener("change", (e) => {
@@ -281,3 +294,43 @@ document.addEventListener("click", (e) => {
     if (typeof abrirModalDonaciones === "function") abrirModalDonaciones();
   }
 }, true);
+
+
+// === BOTÓN RÁPIDO Aa EN LECTURA + TRIGGER INMEDIATO DE CAMALEÓN ===
+document.addEventListener("DOMContentLoaded", () => {
+  const chkCam = document.getElementById("chk-dynamic-cover-grad");
+  if (chkCam) {
+    chkCam.addEventListener("change", () => {
+      if (typeof prefs !== "undefined") {
+        prefs.chameleonGrad = chkCam.checked;
+        if (typeof guardarPreferencias === "function") guardarPreferencias();
+      }
+      if (typeof window.aplicarGradientePortada === "function") window.aplicarGradientePortada();
+    });
+  }
+
+  // Crear botón Aa para lectura de capítulos
+  if (!document.getElementById("btn-reader-aa")) {
+    const btnAa = document.createElement("button");
+    btnAa.id = "btn-reader-aa";
+    btnAa.type = "button";
+    btnAa.title = "Ajustar fuente y apariencia";
+    btnAa.innerHTML = "Aa ⚙";
+    btnAa.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const drawer = document.getElementById("settings-drawer");
+      if (drawer) drawer.classList.toggle("hidden");
+    });
+    document.body.appendChild(btnAa);
+
+    // Mostrar btn-reader-aa solo cuando haya un capítulo abierto en pantalla
+    const syncBtnAa = () => {
+      const rv = document.querySelector(".reader-view, #reader-view, #chapter-content, .chapter-body");
+      const visible = rv && !rv.classList.contains("hidden") && rv.offsetParent !== null;
+      btnAa.style.display = visible ? "inline-flex" : "none";
+    };
+    const obs = new MutationObserver(syncBtnAa);
+    obs.observe(document.body, { attributes: true, subtree: true, childList: true });
+    setInterval(syncBtnAa, 600);
+  }
+});
