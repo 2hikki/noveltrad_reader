@@ -525,3 +525,15 @@ async function abrirNovela(novela) {
     btnSmart.onclick = () => abrirCapitulo(novela, obj.vol, obj.caps, obj.idx, 0);
   }
 }
+
+function abrirModalDonaciones() {
+  document.getElementById("donate-modal").classList.remove("hidden");
+}
+document.getElementById("btn-close-donate").addEventListener("click", () => {
+  document.getElementById("donate-modal").classList.add("hidden");
+});
+document.getElementById("donate-modal").addEventListener("click", (e) => {
+  if (e.target.id === "donate-modal") {
+    document.getElementById("donate-modal").classList.add("hidden");
+  }
+});

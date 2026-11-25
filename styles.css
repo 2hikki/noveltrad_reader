@@ -612,3 +612,50 @@ body {
   border: 1px solid var(--border);
   border-radius: 6px;
 }
+
+/* APARTADO Y MODAL DE DONACIONES */
+.donate-links-grid {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.donate-card-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem 1rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.donate-card-btn:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+.donate-card-btn div {
+  display: flex;
+  flex-direction: column;
+}
+.donate-card-btn small {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.donate-icon {
+  font-size: 1.5rem;
+}
+
+.reader-support-strip {
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
