@@ -111,7 +111,10 @@ function aplicarPreferencias() {
   }
   document.documentElement.style.setProperty("--font-size", prefs.fontSize + "px");
   document.documentElement.style.setProperty("--line-height", prefs.lineHeight);
-  document.documentElement.style.setProperty("--font-family", prefs.fontFamily);
+  const fuenteActiva = prefs.font || prefs.fontFamily || "'Lora', Georgia, serif";
+  prefs.font = fuenteActiva;
+  prefs.fontFamily = fuenteActiva;
+  document.documentElement.style.setProperty("--font-family", fuenteActiva);
   document.documentElement.style.setProperty("--reader-width", prefs.readerWidth + "px");
 
   document.getElementById("lbl-fontsize").textContent = prefs.fontSize + "px";
@@ -281,7 +284,7 @@ document.addEventListener("click", (e) => {
     return;
   }
 
-  prefs.font = val;
+  prefs.font = val; prefs.fontFamily = val;
   localStorage.setItem("nt_prefs", JSON.stringify(prefs));
   if (typeof aplicarPreferencias === "function") aplicarPreferencias();
   sincronizarTarjetasFuente();

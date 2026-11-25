@@ -1127,3 +1127,21 @@ body.chameleon-active main {
   background: transparent !important;
   background-color: transparent !important;
 }
+
+
+/* === FIX CABECERA #novel-header EN TODOS LOS TEMAS Y RGB === */
+#novel-header,
+.novel-detail-header,
+.detail-hero-wrap {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+#novel-header h2,
+#novel-header .novel-hero-info h2 {
+  color: var(--text) !important;
+}
+.reader-body,
+.reader-body p {
+  font-family: var(--font-family) !important;
+}
