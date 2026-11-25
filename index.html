@@ -1,81 +1,87 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="es" data-theme="mihon">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#12151c" />
- <title>NovelaTrad Reader</title>
+  <meta name="theme-color" content="#16131d" />
+  <title>NovelaTrad</title>
   <link rel="icon" type="image/png" sizes="192x192" href="./launchericon-192x192.png" />
   <link rel="apple-touch-icon" href="./launchericon-192x192.png" />
   <link rel="manifest" href="./manifest.json" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <button id="btn-home" class="brand" title="Ir a Biblioteca">📚 NovelaTrad</button>
-    <div class="controls">
-      <button id="btn-music" class="icon-btn" title="Música de fondo (Spotify / YouTube)">🎵 <span class="hide-mobile">Música</span></button>
-      <button id="btn-notebook" class="icon-btn" title="Libreta y Respaldo">🔖 <span class="hide-mobile">Libreta</span></button>
-      <button id="btn-settings" class="icon-btn" title="Apariencia y Tipografía">Aa <span class="hide-mobile">Estilo</span></button>
+  <!-- BARRA SUPERIOR DINÁMICA ESTILO MIHON -->
+  <header class="m3-topbar" id="main-topbar">
+    <div class="topbar-left">
+      <h1 id="topbar-title">Biblioteca</h1>
+      <span id="incognito-pill" class="incognito-badge hidden" title="Modo incógnito activo">Incógnito</span>
+    </div>
+    <div class="topbar-actions" id="topbar-actions">
+      <button id="btn-toggle-search" class="m3-icon-btn" title="Buscar">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      </button>
+      <button id="btn-music" class="m3-icon-btn" title="Ambientación Spotify / YouTube">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      </button>
+      <button id="btn-settings" class="m3-icon-btn" title="Apariencia y Tipografía">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+      </button>
     </div>
   </header>
 
-  <!-- PANEL DESPLEGABLE DE MÚSICA AMBIENTAL (SPOTIFY & YOUTUBE) -->
-  <div id="music-drawer" class="drawer music-drawer hidden">
+  <!-- BARRA DE BÚSQUEDA DESPLEGABLE -->
+  <div id="search-bar-container" class="m3-search-bar hidden">
+    <input type="search" id="global-search-input" placeholder="Buscar título, género o sinopsis..." />
+    <button id="btn-close-search" class="m3-icon-btn">✕</button>
+  </div>
+
+  <!-- PANEL DE MÚSICA AMBIENTAL (SPOTIFY & YOUTUBE) -->
+  <div id="music-drawer" class="drawer hidden">
     <div class="drawer-header">
-      <strong>🎧 Ambientación Musical</strong>
+      <strong>Ambientación Musical</strong>
       <div style="display:flex; gap:0.4rem;">
-        <button id="btn-minimize-music" class="close-btn" title="Minimizar reproductor">_</button>
-        <button id="btn-close-music" class="close-btn" title="Cerrar y detener">✕</button>
+        <button id="btn-minimize-music" class="close-btn" title="Minimizar">_</button>
+        <button id="btn-close-music" class="close-btn" title="Detener">✕</button>
       </div>
     </div>
-
     <p class="music-hint">
-      Pega un enlace de <strong>Spotify</strong> (canción, álbum o playlist) o <strong>YouTube</strong> (video, lo-fi stream o playlist). Si ya tienes sesión abierta en tu navegador, se usará tu cuenta automáticamente.
+      Pega un enlace de <strong>Spotify</strong> o <strong>YouTube</strong>. Usa tu sesión del navegador automáticamente.
     </p>
-
     <div class="music-input-row">
-      <input type="url" id="music-url-input" class="search-input" style="flex:1; min-width:0;" placeholder="https://open.spotify.com/... o youtube.com/..." />
-      <button id="btn-load-music" class="nav-btn primary">▶</button>
+      <input type="url" id="music-url-input" class="m3-input" style="flex:1;" placeholder="https://open.spotify.com/... o youtube.com/..." />
+      <button id="btn-load-music" class="m3-btn filled">▶</button>
     </div>
-
     <div class="music-save-row">
-      <input type="text" id="music-name-input" class="search-input" style="flex:1; min-width:0;" placeholder="Nombre (ej. Lo-fi lectura nocturna)" />
-      <button id="btn-save-track" class="nav-btn" title="Guardar en tus pistas">💾 Guardar</button>
+      <input type="text" id="music-name-input" class="m3-input" style="flex:1;" placeholder="Nombre de la pista..." />
+      <button id="btn-save-track" class="m3-btn tonal">Guardar</button>
     </div>
-
     <label class="checkbox-label">
       <input type="checkbox" id="chk-bind-novel" />
-      <span>Vincular esta pista a la novela actual</span>
+      <span>Vincular a la novela actual</span>
     </label>
-
-    <!-- CONTENEDOR DEL IFRAME DE SPOTIFY / YOUTUBE -->
     <div id="player-embed-wrapper" class="player-embed-wrapper hidden"></div>
-
-    <!-- LISTA DE PISTAS GUARDADAS POR EL LECTOR -->
     <div class="saved-tracks-section">
-      <label style="font-size:0.8rem; color:var(--muted);">Mis pistas guardadas:</label>
+      <label style="font-size:0.78rem; color:var(--muted);">Pistas guardadas:</label>
       <div id="saved-tracks-list" class="saved-tracks-list"></div>
     </div>
   </div>
 
-  <!-- PÍLDORA FLOTANTE CUANDO LA MÚSICA ESTÁ MINIMIZADA -->
-  <button id="music-mini-pill" class="music-mini-pill hidden" title="Abrir reproductor">
-    🎵 Reproductor activo
-  </button>
+  <button id="music-mini-pill" class="music-mini-pill hidden">🎵 Reproductor activo</button>
 
-  <!-- PANEL DESPLEGABLE DE PERSONALIZACIÓN -->
+  <!-- PANEL DE APARIENCIA Y TIPOGRAFÍA -->
   <div id="settings-drawer" class="drawer hidden">
     <div class="drawer-header">
-      <strong>Personalizar Lectura</strong>
+      <strong>Apariencia y Lector</strong>
       <button id="btn-close-settings" class="close-btn">✕</button>
     </div>
-
     <div class="setting-group">
-      <label>Tono de fondo</label>
+      <label>Tema de color</label>
       <div class="theme-swatches" id="theme-swatches">
-        <button data-theme-val="dark" style="background:#12151c;color:#e2e6ef">Oscuro</button>
+        <button data-theme-val="mihon" style="background:#16131d;color:#d0bcff">Mihon</button>
         <button data-theme-val="amoled" style="background:#000000;color:#d8d8d8">AMOLED</button>
         <button data-theme-val="midnight" style="background:#0b132b;color:#dce4f2">Noche</button>
         <button data-theme-val="forest" style="background:#101c16;color:#d8e6de">Bosque</button>
@@ -85,37 +91,34 @@
         <button data-theme-val="light" style="background:#ffffff;color:#111827">Claro</button>
       </div>
     </div>
-
     <div class="setting-group">
       <label>Tipografía</label>
-      <select id="font-family-select">
-        <option value="'Lora', Georgia, serif">Lora (Literaria elegante)</option>
-        <option value="'Merriweather', Georgia, serif">Merriweather (Editorial clásica)</option>
-        <option value="Georgia, 'Times New Roman', serif">Georgia (Sistema Serif)</option>
-        <option value="'Inter', system-ui, sans-serif">Inter (Moderna Sans-Serif)</option>
+      <select id="font-family-select" class="m3-input">
+        <option value="'Lora', Georgia, serif">Lora (Literaria)</option>
+        <option value="'Merriweather', Georgia, serif">Merriweather (Editorial)</option>
+        <option value="Georgia, 'Times New Roman', serif">Georgia (Clásica)</option>
+        <option value="'Inter', system-ui, sans-serif">Inter (Moderna Sans)</option>
         <option value="'Verdana', 'Geneva', sans-serif">Verdana (Alta legibilidad)</option>
       </select>
     </div>
-
     <div class="setting-row">
       <div class="setting-group">
         <label>Tamaño: <span id="lbl-fontsize">18px</span></label>
         <div class="btn-pair">
-          <button id="btn-font-dec">A-</button>
-          <button id="btn-font-inc">A+</button>
+          <button id="btn-font-dec" class="m3-btn tonal">A-</button>
+          <button id="btn-font-inc" class="m3-btn tonal">A+</button>
         </div>
       </div>
       <div class="setting-group">
         <label>Interlineado: <span id="lbl-lineheight">1.85</span></label>
         <div class="btn-pair">
-          <button id="btn-lh-dec">−</button>
-          <button id="btn-lh-inc">+</button>
+          <button id="btn-lh-dec" class="m3-btn tonal">−</button>
+          <button id="btn-lh-inc" class="m3-btn tonal">+</button>
         </div>
       </div>
     </div>
-
     <div class="setting-group">
-      <label>Ancho de columna: <span id="lbl-width">820px</span></label>
+      <label>Ancho de lectura: <span id="lbl-width">820px</span></label>
       <input type="range" id="width-slider" min="600" max="1100" step="20" value="820" />
     </div>
   </div>
@@ -126,80 +129,175 @@
     <button id="btn-add-note">📝 Añadir nota</button>
   </div>
 
-  <!-- MODAL PARA AÑADIR NOTA A UNA CITA -->
+  <!-- MODAL PARA AÑADIR NOTA -->
   <div id="note-modal" class="modal hidden">
     <div class="modal-card">
       <h3>Añadir Nota Personal</h3>
       <blockquote id="modal-quote-preview"></blockquote>
-      <textarea id="modal-note-input" rows="4" placeholder="Escribe tu reflexión, teoría o recordatorio..."></textarea>
+      <textarea id="modal-note-input" rows="4" placeholder="Escribe tu reflexión o recordatorio..."></textarea>
       <div class="modal-actions">
-        <button id="btn-cancel-note" class="nav-btn">Cancelar</button>
-        <button id="btn-confirm-note" class="nav-btn primary">Guardar</button>
+        <button id="btn-cancel-note" class="m3-btn tonal">Cancelar</button>
+        <button id="btn-confirm-note" class="m3-btn filled">Guardar</button>
       </div>
     </div>
   </div>
 
-  <main id="app-container">
-    <!-- ESPACIO PUBLICITARIO SUPERIOR -->
-    <div class="ad-slot" id="ad-top">
-      <span>Espacio Publicitario (728x90 / Responsive)</span>
-    </div>
-
-    <!-- VISTA 1: BIBLIOTECA PERSONAL -->
-    <section id="view-library" class="view active">
-      <div id="continue-reading-banner" class="continue-banner hidden"></div>
-      <div class="section-header">
-        <h1>Biblioteca</h1>
-        <input type="search" id="search-library" class="search-input" placeholder="Buscar en tu biblioteca..." />
+  <!-- MODAL GESTIÓN DE CATEGORÍAS DE BIBLIOTECA -->
+  <div id="categories-modal" class="modal hidden">
+    <div class="modal-card">
+      <div class="drawer-header" style="margin-bottom:0;">
+        <h3>Categorías de Biblioteca</h3>
+        <button id="btn-close-cat-modal" class="close-btn">✕</button>
       </div>
-      <div id="library-grid" class="grid"></div>
+      <div style="display:flex; gap:0.5rem;">
+        <input type="text" id="new-category-input" class="m3-input" style="flex:1;" placeholder="Nueva categoría (ej. Leyendo, Fantasía)..." />
+        <button id="btn-create-category" class="m3-btn filled">Añadir</button>
+      </div>
+      <div id="categories-manage-list" class="cat-manage-list"></div>
+    </div>
+  </div>
+
+  <main id="app-container">
+    <!-- VISTA 1: BIBLIOTECA ESTILO MIHON -->
+    <section id="view-library" class="view active">
+      <!-- TABS DE CATEGORÍAS HORIZONTALES -->
+      <div class="category-tabs-bar" id="library-category-tabs"></div>
+
+      <!-- BANNER CONTINUAR LECTURA -->
+      <div id="continue-reading-banner" class="continue-banner hidden"></div>
+
+      <!-- CUADRÍCULA DE PORTADAS CON BADGE -->
+      <div id="library-grid" class="mihon-grid"></div>
     </section>
 
     <!-- VISTA 2: ACTUALIZACIONES -->
     <section id="view-updates" class="view">
-      <h1>Actualizaciones y Noticias</h1>
       <div id="updates-feed" class="feed-list"></div>
     </section>
 
     <!-- VISTA 3: HISTORIAL -->
     <section id="view-history" class="view">
-      <div class="section-header">
-        <h1>Historial</h1>
-        <button id="btn-clear-history" class="nav-btn">🗑 Limpiar</button>
+      <div class="section-subbar">
+        <span style="color:var(--muted); font-size:0.85rem;">Registro reciente de lectura</span>
+        <button id="btn-clear-history" class="m3-btn tonal">Limpiar historial</button>
       </div>
       <div id="history-list" class="feed-list"></div>
     </section>
 
-    <!-- VISTA 4: EXPLORAR CATÁLOGO -->
+    <!-- VISTA 4: EXPLORAR -->
     <section id="view-explore" class="view">
-      <div class="section-header">
-        <h1>Explorar Catálogo</h1>
-        <input type="search" id="search-explore" class="search-input" placeholder="Buscar novela o género..." />
-      </div>
-      <div id="explore-grid" class="grid"></div>
+      <div id="explore-grid" class="mihon-grid"></div>
     </section>
 
-    <!-- VISTA 5: FICHA DE NOVELA -->
+    <!-- VISTA 5: MÁS (PANTALLA DE AJUSTES Y MENÚ MIHON) -->
+    <section id="view-more" class="view">
+      <div class="more-hero">
+        <div class="more-emblem">み</div>
+        <div class="more-brand-sub">NovelaTrad Reader</div>
+      </div>
+
+      <div class="more-list">
+        <div class="more-item toggle-row" onclick="toggleIncognito()">
+          <div class="more-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="15" r="3"/><circle cx="17" cy="15" r="3"/><path d="M10 15h4M3 11l3-5h12l3 5"/></svg>
+          </div>
+          <div class="more-text">
+            <div class="more-title">Modo incógnito</div>
+            <div class="more-desc">Pausa el historial de lectura</div>
+          </div>
+          <label class="m3-switch" onclick="event.stopPropagation()">
+            <input type="checkbox" id="chk-incognito" onchange="toggleIncognito(this.checked)" />
+            <span class="m3-slider"></span>
+          </label>
+        </div>
+
+        <div class="more-item toggle-row" onclick="toggleOnlyUnread()">
+          <div class="more-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="more-text">
+            <div class="more-title">Sólo capítulos pendientes</div>
+            <div class="more-desc">Filtra la biblioteca para mostrar obras con capítulos sin leer</div>
+          </div>
+          <label class="m3-switch" onclick="event.stopPropagation()">
+            <input type="checkbox" id="chk-only-unread" onchange="toggleOnlyUnread(this.checked)" />
+            <span class="m3-slider"></span>
+          </label>
+        </div>
+
+        <hr class="m3-divider" />
+
+        <button class="more-item" onclick="abrirModalCategorias()">
+          <div class="more-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h11l5 6-5 6H4z"/></svg>
+          </div>
+          <div class="more-text"><div class="more-title">Categorías</div></div>
+        </button>
+
+        <button class="more-item" onclick="abrirVistaLibreta()">
+          <div class="more-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+          </div>
+          <div class="more-text"><div class="more-title">Citas y notas guardadas</div></div>
+        </button>
+
+        <button class="more-item" onclick="abrirVistaEstadisticas()">
+          <div class="more-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          </div>
+          <div class="more-text"><div class="more-title">Estadísticas</div></div>
+        </button>
+
+        <button class="more-item" id="btn-more-backup">
+          <div class="more-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+          </div>
+          <div class="more-text">
+            <div class="more-title">Datos y almacenamiento</div>
+            <div class="more-desc">Exportar o restaurar copia de seguridad (.json)</div>
+          </div>
+        </button>
+
+        <button class="more-item" onclick="document.getElementById('btn-settings').click()">
+          <div class="more-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </div>
+          <div class="more-text"><div class="more-title">Ajustes de lectura</div></div>
+        </button>
+
+        <button class="more-item" onclick="mostrarAcercaDe()">
+          <div class="more-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          </div>
+          <div class="more-text"><div class="more-title">Acerca de</div></div>
+        </button>
+      </div>
+    </section>
+
+    <!-- VISTA 6: FICHA DE NOVELA -->
     <section id="view-novel" class="view">
       <div class="novel-topbar-actions">
-        <button class="btn-back" id="btn-novel-back">← Volver</button>
-        <button class="nav-btn" id="btn-toggle-library">🤍 Añadir a Biblioteca</button>
+        <button class="m3-btn tonal" id="btn-novel-back">← Volver</button>
+        <div style="display:flex; gap:0.5rem;">
+          <select id="novel-category-select" class="m3-input hidden" title="Asignar categoría"></select>
+          <button class="m3-btn tonal" id="btn-toggle-library">🤍 Añadir a Biblioteca</button>
+        </div>
       </div>
       <div id="novel-header"></div>
       <div id="volumes-container"></div>
     </section>
 
-    <!-- VISTA 6: LECTOR DE CAPÍTULO -->
+    <!-- VISTA 7: LECTOR DE CAPÍTULO -->
     <section id="view-reader" class="view">
       <div class="reader-nav">
-        <button id="btn-back-index" class="btn-back">← Índice</button>
-        <span id="reader-progress-label"></span>
+        <button id="btn-back-index" class="m3-btn tonal">← Índice</button>
+        <span id="reader-progress-label" style="color:var(--muted); font-size:0.85rem;"></span>
       </div>
 
       <article id="chapter-content" class="reader-body"></article>
 
       <section id="chapter-user-notes" class="user-notes-box hidden">
-        <h3>🔖 Tus citas y notas en este capítulo</h3>
+        <h3>Tus citas y notas en este capítulo</h3>
         <div id="chapter-notes-list"></div>
       </section>
 
@@ -208,53 +306,72 @@
       </div>
 
       <div class="reader-footer-nav">
-        <button id="btn-prev-cap" class="nav-btn">← Anterior</button>
-        <button id="btn-next-cap" class="nav-btn primary">Siguiente →</button>
+        <button id="btn-prev-cap" class="m3-btn tonal">← Anterior</button>
+        <button id="btn-next-cap" class="m3-btn filled">Siguiente →</button>
       </div>
 
       <section class="comments-section">
-        <h3>💬 Comentarios del capítulo</h3>
-        <p class="comments-hint">
-          Hilo único para este capítulo. Pega aquí tu widget de <strong>Giscus</strong> o <strong>Disqus</strong> en <code>cargarComentariosCapitulo()</code> dentro de <code>app.js</code>.
-        </p>
+        <h3>Comentarios del capítulo</h3>
+        <p class="comments-hint">Cargando comentarios...</p>
         <div id="comments-thread"></div>
       </section>
     </section>
 
-    <!-- VISTA 7: LIBRETA DE CITAS Y RESPALDO JSON -->
+    <!-- VISTA 8: LIBRETA Y RESPALDO -->
     <section id="view-notebook" class="view">
       <div class="notebook-header">
-        <button class="btn-back" onclick="cambiarTab('library')">← Volver</button>
+        <button class="m3-btn tonal" onclick="cambiarTab('more')">← Más</button>
         <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-          <button id="btn-export-notes" class="nav-btn">⬇ Citas (.txt)</button>
-          <button id="btn-backup-json" class="nav-btn primary">💾 Respaldar Todo</button>
-          <label class="nav-btn" style="cursor:pointer;">
-            📂 Restaurar <input type="file" id="input-restore-json" accept=".json" hidden />
+          <button id="btn-export-notes" class="m3-btn tonal">Exportar (.txt)</button>
+          <button id="btn-backup-json" class="m3-btn filled">Respaldar (.json)</button>
+          <label class="m3-btn tonal" style="cursor:pointer;">
+            Restaurar <input type="file" id="input-restore-json" accept=".json" hidden />
           </label>
         </div>
       </div>
-      <h1>🔖 Mi Libreta de Citas y Notas</h1>
       <div id="notebook-list" class="notebook-list"></div>
+    </section>
+
+    <!-- VISTA 9: ESTADÍSTICAS ESTILO MIHON -->
+    <section id="view-stats" class="view">
+      <div class="notebook-header">
+        <button class="m3-btn tonal" onclick="cambiarTab('more')">← Más</button>
+      </div>
+      <div id="stats-container" class="stats-grid"></div>
     </section>
   </main>
 
-  <!-- BARRA DE NAVEGACIÓN INFERIOR ESTILO MIHON -->
-  <nav class="bottom-nav" id="bottom-nav">
-    <button class="tab-btn active" data-tab="library">
-      <span class="tab-icon">📚</span>
-      <span class="tab-label">Biblioteca</span>
+  <!-- BARRA INFERIOR DE 5 PESTAÑAS EXACTA A MIHON -->
+  <nav class="m3-bottom-nav" id="bottom-nav">
+    <button class="m3-tab active" data-tab="library">
+      <span class="m3-pill">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+      </span>
+      <span class="m3-tab-label">Biblioteca</span>
     </button>
-    <button class="tab-btn" data-tab="updates">
-      <span class="tab-icon">🔔</span>
-      <span class="tab-label">Novedades</span>
+    <button class="m3-tab" data-tab="updates">
+      <span class="m3-pill">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 2.4 3.4-.4.4 3.4L20.6 10l-2.4 2.4.4 3.4-3.4.4L12 18.6l-2.4-2.4-3.4.4-.4-3.4L3.4 10l2.4-2.4-.4-3.4 3.4-.4z"/><path d="M12 8v4M12 16h.01"/></svg>
+      </span>
+      <span class="m3-tab-label">Actualizaciones</span>
     </button>
-    <button class="tab-btn" data-tab="history">
-      <span class="tab-icon">🕒</span>
-      <span class="tab-label">Historial</span>
+    <button class="m3-tab" data-tab="history">
+      <span class="m3-pill">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+      </span>
+      <span class="m3-tab-label">Historial</span>
     </button>
-    <button class="tab-btn" data-tab="explore">
-      <span class="tab-icon">🧭</span>
-      <span class="tab-label">Explorar</span>
+    <button class="m3-tab" data-tab="explore">
+      <span class="m3-pill">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+      </span>
+      <span class="m3-tab-label">Explorar</span>
+    </button>
+    <button class="m3-tab" data-tab="more">
+      <span class="m3-pill">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+      </span>
+      <span class="m3-tab-label">Más</span>
     </button>
   </nav>
 

@@ -1,6 +1,12 @@
 let catalogoData = [];
 let noticiasData = [];
 let tabAnterior = "library";
+let tabActual = "library";
+let categoriaActiva = "Todas";
+let filtroBusqueda = "";
+let modoIncognito = JSON.parse(localStorage.getItem("nt_incognito") || "false");
+let soloPendientes = JSON.parse(localStorage.getItem("nt_solo_pendientes") || "false");
+
 let estadoActual = {
   novela: null,
   volumen: null,
@@ -13,9 +19,8 @@ let reproductorActivo = false;
 // ==========================================
 // 0. CONFIGURACIÓN DE COMENTARIOS (GISCUS)
 // ==========================================
-// Obtén repoId y categoryId en https://giscus.app/es tras activar Discussions en tu repo
 const GISCUS_CONFIG = {
-  repo: "2hikki/noveltrad_reader",
+    repo: "2hikki/noveltrad_reader",
   repoId: "R_kgDOV67idg",
   category: "General",
   categoryId: "DIC_kwDOV67ids4DL6PB"
@@ -28,20 +33,17 @@ function parsearUrlMultimedia(urlRaw) {
   const url = urlRaw.trim();
   if (!url) return null;
 
-  // 1. Detectar enlaces de Spotify (track, album, playlist, episode, show)
   const matchSpotify = url.match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?(track|album|playlist|episode|show)\/([a-zA-Z0-9]+)/);
   if (matchSpotify) {
     const tipo = matchSpotify[1];
     const id = matchSpotify[2];
-    const altura = tipo === "track" ? 152 : 352;
     return {
       plataforma: "Spotify",
       embedUrl: `https://open.spotify.com/embed/${tipo}/${id}?utm_source=generator&theme=0`,
-      height: altura
+      height: tipo === "track" ? 152 : 352
     };
   }
 
-  // 2. Detectar playlists de YouTube
   const matchYtList = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
   if (matchYtList && !url.includes("watch?v=")) {
     return {
@@ -51,7 +53,6 @@ function parsearUrlMultimedia(urlRaw) {
     };
   }
 
-  // 3. Detectar videos o directos de YouTube
   const matchYtVideo = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|live\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
   if (matchYtVideo) {
     const listParam = matchYtList ? `&list=${matchYtList[1]}` : "";
@@ -61,74 +62,45 @@ function parsearUrlMultimedia(urlRaw) {
       height: 200
     };
   }
-
   return null;
 }
 
 function cargarEnReproductor(urlRaw) {
   const info = parsearUrlMultimedia(urlRaw);
   const wrapper = document.getElementById("player-embed-wrapper");
-
   if (!info) {
-    alert("Enlace no reconocido. Pega una URL válida de Spotify (canción/playlist/álbum) o YouTube (video/playlist).");
+    alert("Enlace no reconocido. Usa un link de Spotify o YouTube.");
     return;
   }
-
   wrapper.classList.remove("hidden");
-  wrapper.innerHTML = `
-    <iframe
-      src="${info.embedUrl}"
-      height="${info.height}"
-      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-      loading="lazy">
-    </iframe>
-  `;
+  wrapper.innerHTML = `<iframe src="${info.embedUrl}" height="${info.height}" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
   reproductorActivo = true;
   document.getElementById("music-mini-pill").classList.add("hidden");
 }
 
-function obtenerPistasGuardadas() {
-  return JSON.parse(localStorage.getItem("nt_pistas") || "[]");
-}
-
-function guardarPistas(lista) {
-  localStorage.setItem("nt_pistas", JSON.stringify(lista));
-}
+function obtenerPistasGuardadas() { return JSON.parse(localStorage.getItem("nt_pistas") || "[]"); }
+function guardarPistas(lista) { localStorage.setItem("nt_pistas", JSON.stringify(lista)); }
 
 function renderizarPistasGuardadas() {
   const list = document.getElementById("saved-tracks-list");
   const pistas = obtenerPistasGuardadas();
   const slugActual = estadoActual.novela ? estadoActual.novela.slug : null;
-
-  if (pistas.length === 0) {
-    list.innerHTML = `<span style="font-size:0.78rem; color:var(--muted);">Aún no tienes pistas guardadas.</span>`;
+  if (!pistas.length) {
+    list.innerHTML = `<span style="font-size:0.78rem; color:var(--muted);">Sin pistas guardadas.</span>`;
     return;
   }
-
-  const ordenadas = [...pistas].sort((a, b) => {
-    const aMatch = a.novelaSlug === slugActual ? 1 : 0;
-    const bMatch = b.novelaSlug === slugActual ? 1 : 0;
-    return bMatch - aMatch;
-  });
-
-  list.innerHTML = ordenadas.map(p => {
-    const etiquetaNovela = p.novelaTitulo ? `<span class="track-badge">[${p.novelaTitulo.slice(0, 14)}...]</span>` : "";
-    return `
-      <div class="track-item">
-        <button class="track-play-btn" onclick="reproducirPistaGuardada(${p.id})" title="${p.nombre}">
-          ▶ ${etiquetaNovela}${p.nombre}
-        </button>
-        <button class="btn-del-note" onclick="eliminarPista(${p.id})" title="Borrar">✕</button>
-      </div>
-    `;
-  }).join("");
+  const ordenadas = [...pistas].sort((a, b) => (b.novelaSlug === slugActual ? 1 : 0) - (a.novelaSlug === slugActual ? 1 : 0));
+  list.innerHTML = ordenadas.map(p => `
+    <div class="track-item">
+      <button class="track-play-btn" onclick="reproducirPistaGuardada(${p.id})">▶ ${p.novelaTitulo ? `[${p.novelaTitulo.slice(0, 12)}...] ` : ""}${p.nombre}</button>
+      <button class="btn-del-note" onclick="eliminarPista(${p.id})">✕</button>
+    </div>
+  `).join("");
 }
 
 function reproducirPistaGuardada(id) {
-  const pista = obtenerPistasGuardadas().find(p => p.id === id);
-  if (!pista) return;
-  document.getElementById("music-url-input").value = pista.url;
-  cargarEnReproductor(pista.url);
+  const p = obtenerPistasGuardadas().find(x => x.id === id);
+  if (p) { document.getElementById("music-url-input").value = p.url; cargarEnReproductor(p.url); }
 }
 
 function eliminarPista(id) {
@@ -141,14 +113,10 @@ document.getElementById("btn-music").addEventListener("click", () => {
   document.getElementById("music-drawer").classList.toggle("hidden");
   renderizarPistasGuardadas();
 });
-
 document.getElementById("btn-minimize-music").addEventListener("click", () => {
   document.getElementById("music-drawer").classList.add("hidden");
-  if (reproductorActivo) {
-    document.getElementById("music-mini-pill").classList.remove("hidden");
-  }
+  if (reproductorActivo) document.getElementById("music-mini-pill").classList.remove("hidden");
 });
-
 document.getElementById("btn-close-music").addEventListener("click", () => {
   document.getElementById("music-drawer").classList.add("hidden");
   document.getElementById("player-embed-wrapper").innerHTML = "";
@@ -156,65 +124,33 @@ document.getElementById("btn-close-music").addEventListener("click", () => {
   document.getElementById("music-mini-pill").classList.add("hidden");
   reproductorActivo = false;
 });
-
 document.getElementById("music-mini-pill").addEventListener("click", () => {
   document.getElementById("music-mini-pill").classList.add("hidden");
   document.getElementById("music-drawer").classList.remove("hidden");
 });
-
-document.getElementById("btn-load-music").addEventListener("click", () => {
-  cargarEnReproductor(document.getElementById("music-url-input").value);
-});
-
+document.getElementById("btn-load-music").addEventListener("click", () => cargarEnReproductor(document.getElementById("music-url-input").value));
 document.getElementById("btn-save-track").addEventListener("click", () => {
   const url = document.getElementById("music-url-input").value.trim();
   const info = parsearUrlMultimedia(url);
-  if (!info) {
-    alert("Primero pega un enlace válido de Spotify o YouTube.");
-    return;
-  }
+  if (!info) return alert("Pega un enlace válido de Spotify o YouTube.");
   const nombre = document.getElementById("music-name-input").value.trim() || `${info.plataforma} Ambient`;
   const vincular = document.getElementById("chk-bind-novel").checked && estadoActual.novela;
-
   const pistas = obtenerPistasGuardadas();
-  pistas.unshift({
-    id: Date.now(),
-    nombre,
-    url,
-    plataforma: info.plataforma,
-    novelaSlug: vincular ? estadoActual.novela.slug : null,
-    novelaTitulo: vincular ? estadoActual.novela.titulo_es : null
-  });
+  pistas.unshift({ id: Date.now(), nombre, url, novelaSlug: vincular ? estadoActual.novela.slug : null, novelaTitulo: vincular ? estadoActual.novela.titulo_es : null });
   guardarPistas(pistas);
   document.getElementById("music-name-input").value = "";
   renderizarPistasGuardadas();
 });
 
 // ==========================================
-// 2. PREFERENCIAS VISUALES Y TIPOGRAFÍA
+// 2. PREFERENCIAS VISUALES
 // ==========================================
-const defaultPrefs = {
-  theme: "dark",
-  fontSize: 18,
-  lineHeight: 1.85,
-  fontFamily: "'Lora', Georgia, serif",
-  readerWidth: 820
-};
+const defaultPrefs = { theme: "mihon", fontSize: 18, lineHeight: 1.85, fontFamily: "'Lora', Georgia, serif", readerWidth: 820 };
 const prefs = { ...defaultPrefs, ...JSON.parse(localStorage.getItem("nt_prefs") || "{}") };
 
 function obtenerTemaGiscus() {
-  const temasClaros = ["sepia", "parchment", "softgray", "light"];
-  if (prefs.theme === "amoled") return "noborder_dark";
-  return temasClaros.includes(prefs.theme) ? "light" : "dark_dimmed";
-}
-
-function actualizarTemaGiscusEnVivo() {
-  const iframe = document.querySelector("iframe.giscus-frame");
-  if (!iframe) return;
-  iframe.contentWindow.postMessage(
-    { giscus: { setConfig: { theme: obtenerTemaGiscus() } } },
-    "https://giscus.app"
-  );
+  const claros = ["sepia", "parchment", "softgray", "light"];
+  return claros.includes(prefs.theme) ? "light" : "dark_dimmed";
 }
 
 function aplicarPreferencias() {
@@ -233,61 +169,64 @@ function aplicarPreferencias() {
   document.querySelectorAll("#theme-swatches button").forEach(btn => {
     btn.classList.toggle("active-swatch", btn.dataset.themeVal === prefs.theme);
   });
-
   localStorage.setItem("nt_prefs", JSON.stringify(prefs));
-  actualizarTemaGiscusEnVivo();
 }
 
 document.getElementById("btn-settings").addEventListener("click", () => {
   document.getElementById("music-drawer").classList.add("hidden");
-  if (reproductorActivo) document.getElementById("music-mini-pill").classList.remove("hidden");
   document.getElementById("settings-drawer").classList.toggle("hidden");
 });
-document.getElementById("btn-close-settings").addEventListener("click", () => {
-  document.getElementById("settings-drawer").classList.add("hidden");
-});
-document.querySelectorAll("#theme-swatches button").forEach(btn => {
-  btn.addEventListener("click", () => { prefs.theme = btn.dataset.themeVal; aplicarPreferencias(); });
-});
-document.getElementById("font-family-select").addEventListener("change", (e) => {
-  prefs.fontFamily = e.target.value; aplicarPreferencias();
-});
-document.getElementById("btn-font-inc").addEventListener("click", () => {
-  if (prefs.fontSize < 30) { prefs.fontSize += 1; aplicarPreferencias(); }
-});
-document.getElementById("btn-font-dec").addEventListener("click", () => {
-  if (prefs.fontSize > 13) { prefs.fontSize -= 1; aplicarPreferencias(); }
-});
-document.getElementById("btn-lh-inc").addEventListener("click", () => {
-  if (prefs.lineHeight < 2.4) { prefs.lineHeight = +(prefs.lineHeight + 0.1).toFixed(2); aplicarPreferencias(); }
-});
-document.getElementById("btn-lh-dec").addEventListener("click", () => {
-  if (prefs.lineHeight > 1.3) { prefs.lineHeight = +(prefs.lineHeight - 0.1).toFixed(2); aplicarPreferencias(); }
-});
-document.getElementById("width-slider").addEventListener("input", (e) => {
-  prefs.readerWidth = parseInt(e.target.value, 10); aplicarPreferencias();
-});
+document.getElementById("btn-close-settings").addEventListener("click", () => document.getElementById("settings-drawer").classList.add("hidden"));
+document.querySelectorAll("#theme-swatches button").forEach(btn => btn.addEventListener("click", () => { prefs.theme = btn.dataset.themeVal; aplicarPreferencias(); }));
+document.getElementById("font-family-select").addEventListener("change", (e) => { prefs.fontFamily = e.target.value; aplicarPreferencias(); });
+document.getElementById("btn-font-inc").addEventListener("click", () => { if (prefs.fontSize < 30) { prefs.fontSize++; aplicarPreferencias(); } });
+document.getElementById("btn-font-dec").addEventListener("click", () => { if (prefs.fontSize > 13) { prefs.fontSize--; aplicarPreferencias(); } });
+document.getElementById("btn-lh-inc").addEventListener("click", () => { if (prefs.lineHeight < 2.4) { prefs.lineHeight = +(prefs.lineHeight + 0.1).toFixed(2); aplicarPreferencias(); } });
+document.getElementById("btn-lh-dec").addEventListener("click", () => { if (prefs.lineHeight > 1.3) { prefs.lineHeight = +(prefs.lineHeight - 0.1).toFixed(2); aplicarPreferencias(); } });
+document.getElementById("width-slider").addEventListener("input", (e) => { prefs.readerWidth = parseInt(e.target.value, 10); aplicarPreferencias(); });
 
 // ==========================================
-// 3. NAVEGACIÓN POR PESTAÑAS (ESTILO MIHON)
+// 3. NAVEGACIÓN MATERIAL 3 ESTILO MIHON
 // ==========================================
+const titulosVista = {
+  library: "Biblioteca",
+  updates: "Actualizaciones",
+  history: "Historial",
+  explore: "Explorar",
+  more: "Más",
+  notebook: "Citas y Notas",
+  stats: "Estadísticas"
+};
+
 function mostrarVista(nombre) {
   document.getElementById("settings-drawer").classList.add("hidden");
   document.getElementById("selection-toolbar").classList.add("hidden");
   document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
   document.getElementById(`view-${nombre}`).classList.add("active");
 
-  document.getElementById("bottom-nav").classList.toggle("hidden", nombre === "reader");
+  const ocultarNav = nombre === "reader";
+  document.getElementById("bottom-nav").classList.toggle("hidden", ocultarNav);
+  document.getElementById("main-topbar").classList.toggle("hidden", nombre === "more" || nombre === "reader");
+
+  if (titulosVista[nombre]) {
+    document.getElementById("topbar-title").textContent = titulosVista[nombre];
+  }
+  const mostrarLupa = nombre === "library" || nombre === "explore";
+  document.getElementById("btn-toggle-search").classList.toggle("hidden", !mostrarLupa);
+  if (!mostrarLupa) document.getElementById("search-bar-container").classList.add("hidden");
+
   window.scrollTo(0, 0);
 }
 
 function cambiarTab(tabName) {
-  tabAnterior = tabName;
-  document.querySelectorAll(".tab-btn").forEach(b => {
-    b.classList.toggle("active", b.dataset.tab === tabName);
-  });
+  tabActual = tabName;
+  if (["library", "updates", "history", "explore", "more"].includes(tabName)) {
+    tabAnterior = tabName;
+  }
+  document.querySelectorAll(".m3-tab").forEach(b => b.classList.toggle("active", b.dataset.tab === tabName));
 
   if (tabName === "library") {
+    renderizarTabsCategorias();
     renderizarBannerUltimaLectura();
     renderizarBiblioteca();
   } else if (tabName === "updates") {
@@ -296,35 +235,120 @@ function cambiarTab(tabName) {
     renderizarHistorial();
   } else if (tabName === "explore") {
     renderizarExplorar();
+  } else if (tabName === "more") {
+    document.getElementById("chk-incognito").checked = modoIncognito;
+    document.getElementById("chk-only-unread").checked = soloPendientes;
   }
-
   mostrarVista(tabName);
 }
 
-document.querySelectorAll(".tab-btn").forEach(btn => {
-  btn.addEventListener("click", () => cambiarTab(btn.dataset.tab));
-});
+document.querySelectorAll(".m3-tab").forEach(btn => btn.addEventListener("click", () => cambiarTab(btn.dataset.tab)));
 
-document.getElementById("btn-home").addEventListener("click", () => cambiarTab("library"));
-document.getElementById("btn-notebook").addEventListener("click", () => {
-  renderizarLibretaGlobal();
-  mostrarVista("notebook");
+// Búsqueda desplegable
+document.getElementById("btn-toggle-search").addEventListener("click", () => {
+  const bar = document.getElementById("search-bar-container");
+  bar.classList.toggle("hidden");
+  if (!bar.classList.contains("hidden")) document.getElementById("global-search-input").focus();
+});
+document.getElementById("btn-close-search").addEventListener("click", () => {
+  filtroBusqueda = "";
+  document.getElementById("global-search-input").value = "";
+  document.getElementById("search-bar-container").classList.add("hidden");
+  if (tabActual === "library") renderizarBiblioteca();
+  if (tabActual === "explore") renderizarExplorar();
+});
+document.getElementById("global-search-input").addEventListener("input", (e) => {
+  filtroBusqueda = e.target.value;
+  if (tabActual === "library") renderizarBiblioteca();
+  if (tabActual === "explore") renderizarExplorar();
 });
 
 // ==========================================
-// 4. BIBLIOTECA PERSONAL Y CONTEO DE SIN LEER
+// 4. CATEGORÍAS, MODO INCÓGNITO Y BIBLIOTECA
 // ==========================================
-function obtenerBibliotecaSlugs() {
-  return JSON.parse(localStorage.getItem("nt_biblioteca") || "[]");
+function obtenerCategorias() {
+  return JSON.parse(localStorage.getItem("nt_categorias") || '["Leyendo", "Pendientes", "Favoritas"]');
+}
+function guardarCategorias(lista) {
+  localStorage.setItem("nt_categorias", JSON.stringify(lista));
+}
+function obtenerMapaCategoriasNovelas() {
+  return JSON.parse(localStorage.getItem("nt_novela_cat") || "{}");
+}
+function asignarCategoriaNovela(slug, cat) {
+  const mapa = obtenerMapaCategoriasNovelas();
+  mapa[slug] = cat;
+  localStorage.setItem("nt_novela_cat", JSON.stringify(mapa));
 }
 
+function renderizarTabsCategorias() {
+  const bar = document.getElementById("library-category-tabs");
+  const cats = ["Todas", ...obtenerCategorias()];
+  if (!cats.includes(categoriaActiva)) categoriaActiva = "Todas";
+
+  bar.innerHTML = cats.map(c => `
+    <button class="cat-tab ${c === categoriaActiva ? "active" : ""}" onclick="seleccionarCategoria('${c.replace(/'/g, "\\'")}')">${c}</button>
+  `).join("");
+}
+
+function seleccionarCategoria(cat) {
+  categoriaActiva = cat;
+  renderizarTabsCategorias();
+  renderizarBiblioteca();
+}
+
+function abrirModalCategorias() {
+  document.getElementById("categories-modal").classList.remove("hidden");
+  renderizarListaGestionCategorias();
+}
+document.getElementById("btn-close-cat-modal").addEventListener("click", () => {
+  document.getElementById("categories-modal").classList.add("hidden");
+  if (tabActual === "library") renderizarTabsCategorias();
+});
+document.getElementById("btn-create-category").addEventListener("click", () => {
+  const input = document.getElementById("new-category-input");
+  const val = input.value.trim();
+  if (!val || val === "Todas") return;
+  const cats = obtenerCategorias();
+  if (!cats.includes(val)) {
+    cats.push(val);
+    guardarCategorias(cats);
+  }
+  input.value = "";
+  renderizarListaGestionCategorias();
+});
+function eliminarCategoria(cat) {
+  guardarCategorias(obtenerCategorias().filter(c => c !== cat));
+  renderizarListaGestionCategorias();
+}
+function renderizarListaGestionCategorias() {
+  const list = document.getElementById("categories-manage-list");
+  const cats = obtenerCategorias();
+  list.innerHTML = cats.map(c => `
+    <div class="cat-manage-item">
+      <span>${c}</span>
+      <button class="btn-del-note" onclick="eliminarCategoria('${c.replace(/'/g, "\\'")}')">Eliminar</button>
+    </div>
+  `).join("") || `<p style="color:var(--muted); font-size:0.85rem;">Sin categorías personalizadas.</p>`;
+}
+
+function toggleIncognito(forzarValor) {
+  modoIncognito = typeof forzarValor === "boolean" ? forzarValor : !modoIncognito;
+  localStorage.setItem("nt_incognito", JSON.stringify(modoIncognito));
+  document.getElementById("chk-incognito").checked = modoIncognito;
+  document.getElementById("incognito-pill").classList.toggle("hidden", !modoIncognito);
+}
+
+function toggleOnlyUnread(forzarValor) {
+  soloPendientes = typeof forzarValor === "boolean" ? forzarValor : !soloPendientes;
+  localStorage.setItem("nt_solo_pendientes", JSON.stringify(soloPendientes));
+  document.getElementById("chk-only-unread").checked = soloPendientes;
+}
+
+function obtenerBibliotecaSlugs() { return JSON.parse(localStorage.getItem("nt_biblioteca") || "[]"); }
 function alternarEnBiblioteca(slug) {
   let bib = obtenerBibliotecaSlugs();
-  if (bib.includes(slug)) {
-    bib = bib.filter(s => s !== slug);
-  } else {
-    bib.push(slug);
-  }
+  bib = bib.includes(slug) ? bib.filter(s => s !== slug) : [...bib, slug];
   localStorage.setItem("nt_biblioteca", JSON.stringify(bib));
   return bib.includes(slug);
 }
@@ -334,84 +358,73 @@ function contarCapitulosSinLeer(novela) {
   let sinLeer = 0;
   for (const vol of novela.volumenes) {
     for (let c = 1; c <= vol.total_capitulos; c++) {
-      if (!progreso[`${novela.slug}_${vol.clave}_${c}`]) {
-        sinLeer++;
-      }
+      if (!progreso[`${novela.slug}_${vol.clave}_${c}`]) sinLeer++;
     }
   }
   return sinLeer;
 }
 
-function crearTarjetaNovela(novela, esVistaExplorar = false) {
-  const enBiblioteca = obtenerBibliotecaSlugs().includes(novela.slug);
+function crearTarjetaMihon(novela, esExplorar = false) {
+  const enBib = obtenerBibliotecaSlugs().includes(novela.slug);
   const sinLeer = contarCapitulosSinLeer(novela);
 
   const card = document.createElement("div");
-  card.className = "card";
-
-  const badgeUnread = sinLeer > 0 ? `<span class="unread-badge">${sinLeer}</span>` : "";
-  const badgeLib = (esVistaExplorar && enBiblioteca) ? `<span class="in-library-badge">❤️ En biblioteca</span>` : "";
-  const imgHtml = novela.portada
-    ? `<img src="${novela.portada}" alt="Portada de ${novela.titulo_es}" class="card-cover" loading="lazy" />`
-    : `<div class="card-cover placeholder">📖</div>`;
-
+  card.className = "mihon-card";
   card.innerHTML = `
-    ${badgeUnread}
-    ${badgeLib}
-    ${imgHtml}
-    <div class="card-info">
-      <span class="tag">${novela.volumenes.length} Vol. • ${novela.tono || "Novela Ligera"}</span>
-      <h2>${novela.titulo_es}</h2>
-      <p>${novela.sinopsis}</p>
-    </div>
+    ${sinLeer > 0 ? `<span class="unread-badge">${sinLeer}</span>` : ""}
+    ${(esExplorar && enBib) ? `<span class="in-lib-tag">En biblioteca</span>` : ""}
+    ${novela.portada ? `<img src="${novela.portada}" alt="${novela.titulo_es}" loading="lazy" />` : `<div class="mihon-card-placeholder">📖</div>`}
+    <div class="mihon-card-overlay">${novela.titulo_es}</div>
   `;
   card.onclick = () => abrirNovela(novela);
   return card;
 }
 
-function renderizarBiblioteca(filtro = "") {
+function renderizarBiblioteca() {
   const grid = document.getElementById("library-grid");
   const slugs = obtenerBibliotecaSlugs();
-  const q = filtro.toLowerCase().trim();
+  const mapaCat = obtenerMapaCategoriasNovelas();
+  const q = filtroBusqueda.toLowerCase().trim();
 
-  const guardadas = catalogoData.filter(n =>
-    slugs.includes(n.slug) &&
-    (!q || n.titulo_es.toLowerCase().includes(q) || n.sinopsis.toLowerCase().includes(q))
-  );
+  const filtradas = catalogoData.filter(n => {
+    if (!slugs.includes(n.slug)) return false;
+    if (categoriaActiva !== "Todas" && (mapaCat[n.slug] || "Leyendo") !== categoriaActiva) return false;
+    if (soloPendientes && contarCapitulosSinLeer(n) === 0) return false;
+    if (q && !n.titulo_es.toLowerCase().includes(q) && !n.sinopsis.toLowerCase().includes(q)) return false;
+    return true;
+  });
 
   grid.innerHTML = "";
-  if (guardadas.length === 0) {
+  if (filtradas.length === 0) {
     grid.innerHTML = `
-      <div style="grid-column:1/-1; padding:1.5rem; background:var(--surface); border-radius:10px; border:1px solid var(--border);">
-        <p style="margin-bottom:0.8rem;">Tu biblioteca está vacía.</p>
-        <button class="nav-btn primary" onclick="cambiarTab('explore')">🧭 Ir a Explorar y añadir novelas</button>
+      <div class="kaomoji-empty">
+        <div class="kaomoji-face">Σ(ಠ_ಠ)</div>
+        <div class="kaomoji-text">${slugs.length === 0 ? "Tu biblioteca está vacía" : "La categoría está vacía"}</div>
+        ${slugs.length === 0 ? `<button class="m3-btn filled" onclick="cambiarTab('explore')">Explorar catálogo</button>` : ""}
       </div>
     `;
     return;
   }
-
-  guardadas.forEach(novela => grid.appendChild(crearTarjetaNovela(novela, false)));
+  filtradas.forEach(n => grid.appendChild(crearTarjetaMihon(n, false)));
 }
 
-function renderizarExplorar(filtro = "") {
+function renderizarExplorar() {
   const grid = document.getElementById("explore-grid");
-  const q = filtro.toLowerCase().trim();
-
+  const q = filtroBusqueda.toLowerCase().trim();
   const filtradas = catalogoData.filter(n =>
-    !q || n.titulo_es.toLowerCase().includes(q) ||
-    (n.tono && n.tono.toLowerCase().includes(q)) ||
-    n.sinopsis.toLowerCase().includes(q)
+    !q || n.titulo_es.toLowerCase().includes(q) || (n.tono && n.tono.toLowerCase().includes(q)) || n.sinopsis.toLowerCase().includes(q)
   );
 
   grid.innerHTML = "";
-  filtradas.forEach(novela => grid.appendChild(crearTarjetaNovela(novela, true)));
+  if (!filtradas.length) {
+    grid.innerHTML = `<div class="kaomoji-empty"><div class="kaomoji-face">(･_･?)</div><div class="kaomoji-text">No se encontraron resultados</div></div>`;
+    return;
+  }
+  filtradas.forEach(n => grid.appendChild(crearTarjetaMihon(n, true)));
 }
 
-document.getElementById("search-library").addEventListener("input", (e) => renderizarBiblioteca(e.target.value));
-document.getElementById("search-explore").addEventListener("input", (e) => renderizarExplorar(e.target.value));
-
 // ==========================================
-// 5. ACTUALIZACIONES (NOTICIAS + SUBIDAS)
+// 5. ACTUALIZACIONES, HISTORIAL Y ESTADÍSTICAS
 // ==========================================
 function renderizarActualizaciones() {
   const feed = document.getElementById("updates-feed");
@@ -420,35 +433,31 @@ function renderizarActualizaciones() {
   noticiasData.forEach(noticia => {
     html += `
       <div class="feed-item news-item">
-        <span class="feed-badge">📢 ${noticia.tipo || "Anuncio"} • ${noticia.fecha}</span>
-        <strong style="font-size:1.05rem; margin-top:0.25rem;">${noticia.titulo}</strong>
-        <p style="color:var(--muted); font-size:0.9rem; margin-top:0.3rem;">${noticia.contenido}</p>
+        <span class="feed-badge">${noticia.tipo || "Anuncio"} • ${noticia.fecha}</span>
+        <strong style="font-size:1rem; margin-top:0.25rem;">${noticia.titulo}</strong>
+        <p style="color:var(--muted); font-size:0.88rem; margin-top:0.25rem;">${noticia.contenido}</p>
       </div>
     `;
   });
 
   const subidas = [];
-  catalogoData.forEach(novela => {
-    novela.volumenes.forEach(vol => {
-      subidas.push({ novela, vol, fecha: vol.fecha_subida || "" });
-    });
-  });
+  catalogoData.forEach(novela => novela.volumenes.forEach(vol => subidas.push({ novela, vol, fecha: vol.fecha_subida || "" })));
   subidas.sort((a, b) => b.fecha.localeCompare(a.fecha));
 
   subidas.forEach(item => {
     html += `
       <div class="feed-item">
         <div>
-          <span class="feed-badge">✨ Nuevo Volumen Subido</span>
-          <div style="font-weight:600; margin-top:0.2rem;">${item.novela.titulo_es} — Volumen ${item.vol.numero}</div>
-          <div class="feed-meta">${item.vol.total_capitulos} capítulos • Publicado: ${item.fecha}</div>
+          <span class="feed-badge">Nuevo Volumen</span>
+          <div style="font-weight:600; margin-top:0.2rem;">${item.novela.titulo_es} — Vol. ${item.vol.numero}</div>
+          <div class="feed-meta">${item.vol.total_capitulos} capítulos • ${item.fecha}</div>
         </div>
-        <button class="nav-btn primary" onclick="abrirNovelaPorSlug('${item.novela.slug}')">Ver</button>
+        <button class="m3-btn tonal" onclick="abrirNovelaPorSlug('${item.novela.slug}')">Abrir</button>
       </div>
     `;
   });
 
-  feed.innerHTML = html || `<p style="color:var(--muted);">No hay actualizaciones recientes.</p>`;
+  feed.innerHTML = html || `<div class="kaomoji-empty"><div class="kaomoji-face">(－_－) zzZ</div><div class="kaomoji-text">Sin actualizaciones recientes</div></div>`;
 }
 
 function abrirNovelaPorSlug(slug) {
@@ -456,10 +465,8 @@ function abrirNovelaPorSlug(slug) {
   if (nov) abrirNovela(nov);
 }
 
-// ==========================================
-// 6. HISTORIAL Y CONTINUAR LECTURA
-// ==========================================
 function registrarEnHistorial(novela, vol, capData) {
+  if (modoIncognito) return;
   let historial = JSON.parse(localStorage.getItem("nt_historial") || "[]");
   historial = historial.filter(h => !(h.slug === novela.slug && h.volClave === vol.clave && h.capNumero === capData.numero));
   historial.unshift({
@@ -478,40 +485,31 @@ function registrarEnHistorial(novela, vol, capData) {
 function renderizarHistorial() {
   const list = document.getElementById("history-list");
   const historial = JSON.parse(localStorage.getItem("nt_historial") || "[]");
-
-  if (historial.length === 0) {
-    list.innerHTML = `<p style="color:var(--muted);">Aún no has leído ningún capítulo.</p>`;
+  if (!historial.length) {
+    list.innerHTML = `<div class="kaomoji-empty"><div class="kaomoji-face">(・_・)</div><div class="kaomoji-text">Nada leído recientemente</div></div>`;
     return;
   }
-
   list.innerHTML = historial.map((h, i) => `
     <div class="feed-item">
       <div>
         <div style="font-weight:600;">${h.novelaTitulo}</div>
         <div class="feed-meta">Vol. ${h.volNumero}, Cap. ${h.capNumero}: ${h.capTitulo}</div>
-        <div class="feed-meta">Leído el ${h.fechaHora}</div>
+        <div class="feed-meta">${h.fechaHora}</div>
       </div>
-      <button class="nav-btn primary" onclick="reanudarDesdeHistorial(${i})">Leer</button>
+      <button class="m3-btn filled" onclick="reanudarDesdeHistorial(${i})">▶</button>
     </div>
   `).join("");
 }
 
-async function reanudarDesdeHistorial(indiceHistorial) {
-  const historial = JSON.parse(localStorage.getItem("nt_historial") || "[]");
-  const item = historial[indiceHistorial];
+async function reanudarDesdeHistorial(idxHist) {
+  const item = JSON.parse(localStorage.getItem("nt_historial") || "[]")[idxHist];
   if (!item) return;
-
-  const novelaObj = catalogoData.find(n => n.slug === item.slug);
-  if (!novelaObj) return;
-  const volObj = novelaObj.volumenes.find(v => v.clave === item.volClave);
-  if (!volObj) return;
-
-  const res = await fetch(volObj.ruta_indice);
-  const indiceData = await res.json();
+  const nov = catalogoData.find(n => n.slug === item.slug);
+  const vol = nov?.volumenes.find(v => v.clave === item.volClave);
+  if (!vol) return;
+  const indiceData = await (await fetch(vol.ruta_indice)).json();
   const idx = indiceData.capitulos.findIndex(c => c.numero === item.capNumero);
-  if (idx !== -1) {
-    await abrirCapitulo(novelaObj, volObj, indiceData.capitulos, idx, 0);
-  }
+  if (idx !== -1) await abrirCapitulo(nov, vol, indiceData.capitulos, idx, 0);
 }
 
 document.getElementById("btn-clear-history").addEventListener("click", () => {
@@ -519,6 +517,36 @@ document.getElementById("btn-clear-history").addEventListener("click", () => {
   renderizarHistorial();
 });
 
+function abrirVistaLibreta() {
+  renderizarLibretaGlobal();
+  mostrarVista("notebook");
+}
+
+function abrirVistaEstadisticas() {
+  const progreso = JSON.parse(localStorage.getItem("nt_progreso") || "{}");
+  const leidos = Object.keys(progreso).length;
+  const enBib = obtenerBibliotecaSlugs().length;
+  const citas = obtenerNotas().length;
+  const totalCaps = catalogoData.reduce((acc, n) => acc + n.volumenes.reduce((a, v) => a + v.total_capitulos, 0), 0);
+
+  document.getElementById("stats-container").innerHTML = `
+    <div class="stat-box"><div class="stat-num">${enBib}</div><div class="stat-lbl">En Biblioteca</div></div>
+    <div class="stat-box"><div class="stat-num">${leidos}</div><div class="stat-lbl">Capítulos Leídos</div></div>
+    <div class="stat-box"><div class="stat-num">${totalCaps}</div><div class="stat-lbl">Capítulos Totales</div></div>
+    <div class="stat-box"><div class="stat-num">${citas}</div><div class="stat-lbl">Citas y Notas</div></div>
+  `;
+  mostrarVista("stats");
+}
+
+function mostrarAcercaDe() {
+  alert("NovelaTrad Reader\nInterfaz inspirada en Mihon (Material You).\nTraducciones offline y comentarios Giscus.");
+}
+
+document.getElementById("btn-more-backup").addEventListener("click", () => abrirVistaLibreta());
+
+// ==========================================
+// 6. CONTINUAR LECTURA Y FICHA DE NOVELA
+// ==========================================
 let scrollTimer = null;
 window.addEventListener("scroll", () => {
   if (!document.getElementById("view-reader").classList.contains("active")) return;
@@ -535,87 +563,79 @@ window.addEventListener("scroll", () => {
 function renderizarBannerUltimaLectura() {
   const banner = document.getElementById("continue-reading-banner");
   const ultima = JSON.parse(localStorage.getItem("nt_ultima_lectura") || "null");
-  if (!ultima) { banner.classList.add("hidden"); return; }
-
-  const novelaObj = catalogoData.find(n => n.slug === ultima.slug);
-  if (!novelaObj) { banner.classList.add("hidden"); return; }
-  const volObj = novelaObj.volumenes.find(v => v.clave === ultima.volClave);
-  if (!volObj) return;
+  if (!ultima) return banner.classList.add("hidden");
+  const nov = catalogoData.find(n => n.slug === ultima.slug);
+  const vol = nov?.volumenes.find(v => v.clave === ultima.volClave);
+  if (!vol) return banner.classList.add("hidden");
 
   banner.classList.remove("hidden");
   banner.innerHTML = `
     <div>
-      <span style="font-size:0.76rem; color:var(--accent); font-weight:700;">CONTINUAR ÚLTIMA LECTURA</span>
-      <div style="font-weight:600; margin-top:0.2rem;">${novelaObj.titulo_es} — Vol. ${volObj.numero}, Cap. ${ultima.capNumero}</div>
+      <span style="font-size:0.72rem; color:var(--accent); font-weight:700;">CONTINUAR LECTURA</span>
+      <div style="font-weight:600; font-size:0.92rem;">${nov.titulo_es} • Vol. ${vol.numero}, Cap. ${ultima.capNumero}</div>
     </div>
-    <button id="btn-resume-now" class="nav-btn primary">Reanudar →</button>
+    <button id="btn-resume-now" class="m3-btn filled">Reanudar</button>
   `;
-
   document.getElementById("btn-resume-now").onclick = async () => {
-    const res = await fetch(volObj.ruta_indice);
-    const indiceData = await res.json();
+    const indiceData = await (await fetch(vol.ruta_indice)).json();
     const idx = indiceData.capitulos.findIndex(c => c.numero === ultima.capNumero);
-    if (idx !== -1) {
-      await abrirCapitulo(novelaObj, volObj, indiceData.capitulos, idx, ultima.scrollY || 0);
-    }
+    if (idx !== -1) await abrirCapitulo(nov, vol, indiceData.capitulos, idx, ultima.scrollY || 0);
   };
 }
 
-// ==========================================
-// 7. FICHA DE NOVELA E ÍNDICE
-// ==========================================
 async function abrirNovela(novela) {
   estadoActual.novela = novela;
   document.getElementById("btn-novel-back").onclick = () => cambiarTab(tabAnterior);
 
   const btnBib = document.getElementById("btn-toggle-library");
-  const actualizarBotonBib = () => {
-    const enBib = obtenerBibliotecaSlugs().includes(novela.slug);
-    btnBib.textContent = enBib ? "❤️ En Biblioteca" : "🤍 Añadir a Biblioteca";
-    btnBib.classList.toggle("primary", enBib);
-  };
-  actualizarBotonBib();
-  btnBib.onclick = () => { alternarEnBiblioteca(novela.slug); actualizarBotonBib(); };
+  const catSelect = document.getElementById("novel-category-select");
 
-  const coverHtml = novela.portada
-    ? `<img src="${novela.portada}" alt="${novela.titulo_es}" class="novel-hero-cover" />`
-    : "";
+  const actualizarControlesBib = () => {
+    const enBib = obtenerBibliotecaSlugs().includes(novela.slug);
+    btnBib.textContent = enBib ? "❤️ En Biblioteca" : "🤍 Añadir";
+    btnBib.className = enBib ? "m3-btn filled" : "m3-btn tonal";
+    catSelect.classList.toggle("hidden", !enBib);
+    if (enBib) {
+      const cats = obtenerCategorias();
+      const actual = obtenerMapaCategoriasNovelas()[novela.slug] || cats[0] || "Leyendo";
+      catSelect.innerHTML = cats.map(c => `<option value="${c}" ${c === actual ? "selected" : ""}>${c}</option>`).join("");
+    }
+  };
+  actualizarControlesBib();
+  btnBib.onclick = () => { alternarEnBiblioteca(novela.slug); actualizarControlesBib(); };
+  catSelect.onchange = (e) => asignarCategoriaNovela(novela.slug, e.target.value);
 
   document.getElementById("novel-header").innerHTML = `
     <div class="novel-hero">
-      ${coverHtml}
+      ${novela.portada ? `<img src="${novela.portada}" alt="${novela.titulo_es}" class="novel-hero-cover" />` : ""}
       <div class="novel-hero-info">
-        <h1>${novela.titulo_es}</h1>
-        <span class="tag" style="color:var(--accent); font-size:0.85rem;">${novela.tono || "Novela Ligera"}</span>
-        <p style="color:var(--muted); margin:0.6rem 0 1rem; font-size:0.95rem;">${novela.sinopsis}</p>
-        <button id="btn-smart-read" class="nav-btn primary">▶ Empezar / Continuar lectura</button>
+        <h2>${novela.titulo_es}</h2>
+        <span style="color:var(--accent); font-size:0.82rem;">${novela.tono || "Novela Ligera"}</span>
+        <p style="color:var(--muted); margin:0.5rem 0 0.9rem; font-size:0.88rem;">${novela.sinopsis}</p>
+        <button id="btn-smart-read" class="m3-btn filled">▶ Continuar</button>
       </div>
     </div>
   `;
 
   const container = document.getElementById("volumes-container");
-  container.innerHTML = "<p>Cargando capítulos...</p>";
+  container.innerHTML = "<p style='color:var(--muted);'>Cargando...</p>";
   mostrarVista("novel");
 
   const progreso = JSON.parse(localStorage.getItem("nt_progreso") || "{}");
   container.innerHTML = "";
-
   let primerNoLeido = null;
-  let primerCapituloAbsoluto = null;
+  let primerCap = null;
 
   for (const vol of novela.volumenes) {
-    const res = await fetch(vol.ruta_indice);
-    const indiceData = await res.json();
-
-    const volCoverHtml = vol.portada ? `<img src="${vol.portada}" alt="Volumen ${vol.numero}" class="vol-cover" />` : "";
+    const indiceData = await (await fetch(vol.ruta_indice)).json();
     const box = document.createElement("div");
     box.className = "vol-box";
     box.innerHTML = `
       <div class="vol-header">
-        ${volCoverHtml}
+        ${vol.portada ? `<img src="${vol.portada}" class="vol-cover" />` : ""}
         <div>
           <h3>Volumen ${vol.numero}</h3>
-          <span style="color:var(--muted); font-size:0.85rem;">${indiceData.capitulos.length} capítulos</span>
+          <span style="color:var(--muted); font-size:0.82rem;">${indiceData.capitulos.length} capítulos</span>
         </div>
       </div>
     `;
@@ -624,37 +644,26 @@ async function abrirNovela(novela) {
     ul.className = "cap-list";
 
     indiceData.capitulos.forEach((cap, idx) => {
-      const claveLeido = `${novela.slug}_${vol.clave}_${cap.numero}`;
-      const leido = !!progreso[claveLeido];
-
-      if (!primerCapituloAbsoluto) primerCapituloAbsoluto = { vol, caps: indiceData.capitulos, idx };
+      const clave = `${novela.slug}_${vol.clave}_${cap.numero}`;
+      const leido = !!progreso[clave];
+      if (!primerCap) primerCap = { vol, caps: indiceData.capitulos, idx };
       if (!leido && !primerNoLeido) primerNoLeido = { vol, caps: indiceData.capitulos, idx };
 
       const li = document.createElement("li");
       li.className = "cap-item" + (leido ? " read" : "");
-
-      const spanTitle = document.createElement("span");
-      spanTitle.className = "cap-title-btn";
-      spanTitle.textContent = `Cap. ${cap.numero}: ${cap.titulo}`;
-      spanTitle.onclick = () => abrirCapitulo(novela, vol, indiceData.capitulos, idx, 0);
+      li.innerHTML = `<span class="cap-title-btn">Cap. ${cap.numero}: ${cap.titulo}</span>`;
+      li.querySelector(".cap-title-btn").onclick = () => abrirCapitulo(novela, vol, indiceData.capitulos, idx, 0);
 
       const btnCheck = document.createElement("button");
       btnCheck.className = "cap-toggle-read";
-      btnCheck.title = "Marcar como leído / no leído";
-      btnCheck.textContent = leido ? "✓ Leído" : "Marcar";
+      btnCheck.textContent = leido ? "✓" : "Marcar";
       btnCheck.onclick = (e) => {
         e.stopPropagation();
-        const progActual = JSON.parse(localStorage.getItem("nt_progreso") || "{}");
-        if (progActual[claveLeido]) {
-          delete progActual[claveLeido];
-        } else {
-          progActual[claveLeido] = true;
-        }
-        localStorage.setItem("nt_progreso", JSON.stringify(progActual));
+        const p = JSON.parse(localStorage.getItem("nt_progreso") || "{}");
+        p[clave] ? delete p[clave] : (p[clave] = true);
+        localStorage.setItem("nt_progreso", JSON.stringify(p));
         abrirNovela(novela);
       };
-
-      li.appendChild(spanTitle);
       li.appendChild(btnCheck);
       ul.appendChild(li);
     });
@@ -663,30 +672,22 @@ async function abrirNovela(novela) {
     container.appendChild(box);
   }
 
-  const objetivo = primerNoLeido || primerCapituloAbsoluto;
+  const obj = primerNoLeido || primerCap;
   const btnSmart = document.getElementById("btn-smart-read");
-  if (objetivo) {
-    btnSmart.textContent = primerNoLeido
-      ? `▶ Continuar: Vol. ${objetivo.vol.numero}, Cap. ${objetivo.caps[objetivo.idx].numero}`
-      : "▶ Volver a leer desde el inicio";
-    btnSmart.onclick = () => abrirCapitulo(novela, objetivo.vol, objetivo.caps, objetivo.idx, 0);
+  if (obj) {
+    btnSmart.textContent = primerNoLeido ? `▶ Vol. ${obj.vol.numero} • Cap. ${obj.caps[obj.idx].numero}` : "▶ Releer desde inicio";
+    btnSmart.onclick = () => abrirCapitulo(novela, obj.vol, obj.caps, obj.idx, 0);
   }
 }
 
 // ==========================================
-// 8. LECTOR DE CAPÍTULOS, COMENTARIOS Y CITAS
+// 7. LECTOR, COMENTARIOS GISCUS Y CITAS
 // ==========================================
 function formatearParrafo(texto) {
   const limpio = texto.trim();
-  if (/^(\*\s*){3,}$/.test(limpio) || limpio === "***") {
-    return `<p class="scene-break">* * *</p>`;
-  }
-  const escapado = limpio
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/\*([^*]+)\*/g, "<em>$1</em>");
-  return `<p>${escapado}</p>`;
+  if (/^(\*\s*){3,}$/.test(limpio) || limpio === "***") return `<p class="scene-break">* * *</p>`;
+  const esc = limpio.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  return `<p>${esc}</p>`;
 }
 
 function cargarComentariosCapitulo(identificadorHilo) {
@@ -694,14 +695,10 @@ function cargarComentariosCapitulo(identificadorHilo) {
   const hint = document.querySelector(".comments-hint");
   contenedor.innerHTML = "";
 
-  // Si aún no has puesto los IDs reales de Giscus, mostrar guía rápida y el ID del hilo
   if (GISCUS_CONFIG.repoId.startsWith("PEGA_AQUI")) {
-    if (hint) hint.classList.remove("hidden");
-    contenedor.innerHTML = `<div style="margin-top:0.75rem; font-size:0.82rem; color:var(--muted);">Hilo preparado: <code>${identificadorHilo}</code></div>`;
+    if (hint) { hint.classList.remove("hidden"); hint.textContent = `Hilo listo: ${identificadorHilo} (configura repoId y categoryId en app.js)`; }
     return;
   }
-
-  // Ocultar texto de instrucciones y cargar widget real de Giscus
   if (hint) hint.classList.add("hidden");
 
   const script = document.createElement("script");
@@ -712,53 +709,36 @@ function cargarComentariosCapitulo(identificadorHilo) {
   script.setAttribute("data-category-id", GISCUS_CONFIG.categoryId);
   script.setAttribute("data-mapping", "specific");
   script.setAttribute("data-term", identificadorHilo);
-  script.setAttribute("data-strict", "0");
   script.setAttribute("data-reactions-enabled", "1");
-  script.setAttribute("data-emit-metadata", "0");
-  script.setAttribute("data-input-position", "top");
   script.setAttribute("data-theme", obtenerTemaGiscus());
   script.setAttribute("data-lang", "es");
   script.crossOrigin = "anonymous";
   script.async = true;
-
   contenedor.appendChild(script);
 }
 
 async function abrirCapitulo(novela, vol, listaCapitulos, idx, scrollRestaurar = 0) {
   estadoActual = { novela, volumen: vol, capitulosIndice: listaCapitulos, capIndex: idx };
   const capInfo = listaCapitulos[idx];
-  const rutaJson = `output/novelas/${novela.slug}/${vol.clave}/${capInfo.archivo}`;
+  const capData = await (await fetch(`output/novelas/${novela.slug}/${vol.clave}/${capInfo.archivo}`)).json();
 
-  const res = await fetch(rutaJson);
-  const capData = await res.json();
+  if (!modoIncognito) {
+    const progreso = JSON.parse(localStorage.getItem("nt_progreso") || "{}");
+    progreso[`${novela.slug}_${vol.clave}_${capData.numero}`] = true;
+    localStorage.setItem("nt_progreso", JSON.stringify(progreso));
+    localStorage.setItem("nt_ultima_lectura", JSON.stringify({
+      slug: novela.slug, volClave: vol.clave, capNumero: capData.numero, capTitulo: capData.titulo_es, scrollY: scrollRestaurar
+    }));
+    registrarEnHistorial(novela, vol, capData);
+  }
 
-  const progreso = JSON.parse(localStorage.getItem("nt_progreso") || "{}");
-  progreso[`${novela.slug}_${vol.clave}_${capData.numero}`] = true;
-  localStorage.setItem("nt_progreso", JSON.stringify(progreso));
-
-  localStorage.setItem("nt_ultima_lectura", JSON.stringify({
-    slug: novela.slug,
-    volClave: vol.clave,
-    capNumero: capData.numero,
-    capTitulo: capData.titulo_es,
-    scrollY: scrollRestaurar
-  }));
-
-  registrarEnHistorial(novela, vol, capData);
-
-  let html = `<h1>Capítulo ${capData.numero}: ${capData.titulo_es}</h1>`;
-  html += capData.parrafos.map(formatearParrafo).join("");
-
-  if (capData.notas_traductor && capData.notas_traductor.length > 0) {
-    html += `<div class="translator-notes"><strong>Notas de traducción:</strong><ul>` +
-      capData.notas_traductor.map(n => `<li>${n}</li>`).join("") +
-      `</ul></div>`;
+  let html = `<h1>Capítulo ${capData.numero}: ${capData.titulo_es}</h1>` + capData.parrafos.map(formatearParrafo).join("");
+  if (capData.notas_traductor?.length) {
+    html += `<div class="translator-notes"><strong>Notas de traducción:</strong><ul>${capData.notas_traductor.map(n => `<li>${n}</li>`).join("")}</ul></div>`;
   }
 
   document.getElementById("chapter-content").innerHTML = html;
-  document.getElementById("reader-progress-label").textContent =
-    `Vol. ${vol.numero} • Cap. ${idx + 1} de ${listaCapitulos.length}`;
-
+  document.getElementById("reader-progress-label").textContent = `Vol. ${vol.numero} • ${idx + 1}/${listaCapitulos.length}`;
   document.getElementById("btn-back-index").onclick = () => abrirNovela(novela);
 
   const btnPrev = document.getElementById("btn-prev-cap");
@@ -771,13 +751,10 @@ async function abrirCapitulo(novela, vol, listaCapitulos, idx, scrollRestaurar =
   renderizarNotasCapitulo();
   cargarComentariosCapitulo(`${novela.slug}-${vol.clave}-cap-${capData.numero}`);
   mostrarVista("reader");
-
-  if (scrollRestaurar > 0) {
-    setTimeout(() => window.scrollTo({ top: scrollRestaurar, behavior: "smooth" }), 100);
-  }
+  if (scrollRestaurar > 0) setTimeout(() => window.scrollTo({ top: scrollRestaurar, behavior: "smooth" }), 100);
 }
 
-// Citas y Notas
+// Citas y Respaldo
 function obtenerNotas() { return JSON.parse(localStorage.getItem("nt_notas") || "[]"); }
 function guardarNotas(lista) { localStorage.setItem("nt_notas", JSON.stringify(lista)); }
 
@@ -800,7 +777,6 @@ document.getElementById("btn-save-quote").addEventListener("click", () => {
   window.getSelection().removeAllRanges();
   document.getElementById("selection-toolbar").classList.add("hidden");
 });
-
 document.getElementById("btn-add-note").addEventListener("click", () => {
   if (!seleccionActualTexto) return;
   document.getElementById("modal-quote-preview").textContent = `"${seleccionActualTexto}"`;
@@ -808,14 +784,9 @@ document.getElementById("btn-add-note").addEventListener("click", () => {
   document.getElementById("note-modal").classList.remove("hidden");
   document.getElementById("selection-toolbar").classList.add("hidden");
 });
-
-document.getElementById("btn-cancel-note").addEventListener("click", () => {
-  document.getElementById("note-modal").classList.add("hidden");
-});
-
+document.getElementById("btn-cancel-note").addEventListener("click", () => document.getElementById("note-modal").classList.add("hidden"));
 document.getElementById("btn-confirm-note").addEventListener("click", () => {
-  const notaTexto = document.getElementById("modal-note-input").value.trim();
-  registrarCitaONota(seleccionActualTexto, notaTexto);
+  registrarCitaONota(seleccionActualTexto, document.getElementById("modal-note-input").value.trim());
   document.getElementById("note-modal").classList.add("hidden");
   window.getSelection().removeAllRanges();
 });
@@ -824,15 +795,9 @@ function registrarCitaONota(cita, nota) {
   const capInfo = estadoActual.capitulosIndice[estadoActual.capIndex];
   const notas = obtenerNotas();
   notas.unshift({
-    id: Date.now(),
-    slug: estadoActual.novela.slug,
-    novelaTitulo: estadoActual.novela.titulo_es,
-    volNumero: estadoActual.volumen.numero,
-    capNumero: capInfo.numero,
-    capTitulo: capInfo.titulo,
-    cita,
-    nota,
-    fecha: new Date().toLocaleDateString()
+    id: Date.now(), slug: estadoActual.novela.slug, novelaTitulo: estadoActual.novela.titulo_es,
+    volNumero: estadoActual.volumen.numero, capNumero: capInfo.numero, capTitulo: capInfo.titulo,
+    cita, nota, fecha: new Date().toLocaleDateString()
   });
   guardarNotas(notas);
   renderizarNotasCapitulo();
@@ -848,22 +813,15 @@ function renderizarNotasCapitulo() {
   const box = document.getElementById("chapter-user-notes");
   const list = document.getElementById("chapter-notes-list");
   if (!estadoActual.novela) return;
-
   const capInfo = estadoActual.capitulosIndice[estadoActual.capIndex];
-  const notasCap = obtenerNotas().filter(
-    n => n.slug === estadoActual.novela.slug && n.volNumero === estadoActual.volumen.numero && n.capNumero === capInfo.numero
-  );
-
-  if (notasCap.length === 0) { box.classList.add("hidden"); return; }
+  const notasCap = obtenerNotas().filter(n => n.slug === estadoActual.novela.slug && n.volNumero === estadoActual.volumen.numero && n.capNumero === capInfo.numero);
+  if (!notasCap.length) return box.classList.add("hidden");
   box.classList.remove("hidden");
   list.innerHTML = notasCap.map(n => `
-    <div class="note-card" style="margin-top:0.75rem;">
+    <div class="note-card" style="margin-top:0.65rem;">
       <blockquote>"${n.cita}"</blockquote>
-      ${n.nota ? `<p>${n.nota}</p>` : ""}
-      <div class="note-meta">
-        <span>Guardado el ${n.fecha}</span>
-        <button class="btn-del-note" onclick="eliminarNota(${n.id})">Eliminar</button>
-      </div>
+      ${n.nota ? `<p style="margin-top:0.35rem;">${n.nota}</p>` : ""}
+      <div class="note-meta"><span>${n.fecha}</span><button class="btn-del-note" onclick="eliminarNota(${n.id})">Eliminar</button></div>
     </div>
   `).join("");
 }
@@ -871,18 +829,15 @@ function renderizarNotasCapitulo() {
 function renderizarLibretaGlobal() {
   const list = document.getElementById("notebook-list");
   const notas = obtenerNotas();
-  if (notas.length === 0) {
-    list.innerHTML = `<p style="color:var(--muted);">Aún no has guardado citas ni notas.</p>`;
+  if (!notas.length) {
+    list.innerHTML = `<div class="kaomoji-empty"><div class="kaomoji-face">(￣▽￣)ノ</div><div class="kaomoji-text">Aún no has guardado citas ni notas</div></div>`;
     return;
   }
   list.innerHTML = notas.map(n => `
     <div class="note-card">
       <blockquote>"${n.cita}"</blockquote>
-      ${n.nota ? `<p>${n.nota}</p>` : ""}
-      <div class="note-meta">
-        <span>${n.novelaTitulo} • Vol. ${n.volNumero}, Cap. ${n.capNumero} (${n.fecha})</span>
-        <button class="btn-del-note" onclick="eliminarNota(${n.id})">Eliminar</button>
-      </div>
+      ${n.nota ? `<p style="margin-top:0.35rem;">${n.nota}</p>` : ""}
+      <div class="note-meta"><span>${n.novelaTitulo} • Vol. ${n.volNumero}, Cap. ${n.capNumero}</span><button class="btn-del-note" onclick="eliminarNota(${n.id})">Eliminar</button></div>
     </div>
   `).join("");
 }
@@ -890,20 +845,18 @@ function renderizarLibretaGlobal() {
 document.getElementById("btn-export-notes").addEventListener("click", () => {
   const notas = obtenerNotas();
   if (!notas.length) return;
-  const contenido = notas.map(n =>
-    `[${n.novelaTitulo} - Vol. ${n.volNumero}, Cap. ${n.capNumero}]\n"${n.cita}"\n${n.nota ? "Nota: " + n.nota + "\n" : ""}---`
-  ).join("\n\n");
-  const blob = new Blob([contenido], { type: "text/plain;charset=utf-8" });
+  const txt = notas.map(n => `[${n.novelaTitulo} - Vol. ${n.volNumero}, Cap. ${n.capNumero}]\n"${n.cita}"\n${n.nota ? "Nota: " + n.nota + "\n" : ""}---`).join("\n\n");
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
+  a.href = URL.createObjectURL(new Blob([txt], { type: "text/plain;charset=utf-8" }));
   a.download = "mis_citas_y_notas.txt";
   a.click();
 });
 
-// Respaldo y Restauración estilo Mihon (.json)
 document.getElementById("btn-backup-json").addEventListener("click", () => {
   const backup = {
     nt_biblioteca: obtenerBibliotecaSlugs(),
+    nt_categorias: obtenerCategorias(),
+    nt_novela_cat: obtenerMapaCategoriasNovelas(),
     nt_progreso: JSON.parse(localStorage.getItem("nt_progreso") || "{}"),
     nt_historial: JSON.parse(localStorage.getItem("nt_historial") || "[]"),
     nt_notas: obtenerNotas(),
@@ -911,10 +864,9 @@ document.getElementById("btn-backup-json").addEventListener("click", () => {
     nt_ultima_lectura: JSON.parse(localStorage.getItem("nt_ultima_lectura") || "null"),
     nt_prefs: prefs
   };
-  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `novelatrad_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" }));
+  a.download = `novelatrad_backup_${new Date().toISOString().slice(0, 10)}.json`;
   a.click();
 });
 
@@ -924,53 +876,31 @@ document.getElementById("input-restore-json").addEventListener("change", (e) => 
   const reader = new FileReader();
   reader.onload = (ev) => {
     try {
-      const data = JSON.parse(ev.target.result);
-      if (data.nt_biblioteca) localStorage.setItem("nt_biblioteca", JSON.stringify(data.nt_biblioteca));
-      if (data.nt_progreso) localStorage.setItem("nt_progreso", JSON.stringify(data.nt_progreso));
-      if (data.nt_historial) localStorage.setItem("nt_historial", JSON.stringify(data.nt_historial));
-      if (data.nt_notas) localStorage.setItem("nt_notas", JSON.stringify(data.nt_notas));
-      if (data.nt_pistas) localStorage.setItem("nt_pistas", JSON.stringify(data.nt_pistas));
-      if (data.nt_ultima_lectura) localStorage.setItem("nt_ultima_lectura", JSON.stringify(data.nt_ultima_lectura));
-      alert("Respaldo restaurado correctamente.");
+      const d = JSON.parse(ev.target.result);
+      ["nt_biblioteca", "nt_categorias", "nt_novela_cat", "nt_progreso", "nt_historial", "nt_notas", "nt_pistas", "nt_ultima_lectura"].forEach(k => {
+        if (d[k]) localStorage.setItem(k, JSON.stringify(d[k]));
+      });
+      alert("Copia de seguridad restaurada.");
       location.reload();
-    } catch {
-      alert("El archivo de respaldo no es válido.");
-    }
+    } catch { alert("Archivo no válido."); }
   };
   reader.readAsText(file);
 });
 
 // ==========================================
-// 9. INICIALIZACIÓN
+// 8. INICIALIZACIÓN
 // ==========================================
 async function iniciarApp() {
   aplicarPreferencias();
+  document.getElementById("incognito-pill").classList.toggle("hidden", !modoIncognito);
   try {
-    const resCat = await fetch("output/catalogo.json");
-    const dataCat = await resCat.json();
-    catalogoData = dataCat.novelas || [];
-
-    try {
-      const resNot = await fetch("output/noticias.json");
-      const dataNot = await resNot.json();
-      noticiasData = dataNot.noticias || [];
-    } catch {
-      noticiasData = [];
-    }
-
-    if (obtenerBibliotecaSlugs().length === 0 && catalogoData.length > 0) {
-      cambiarTab("explore");
-    } else {
-      cambiarTab("library");
-    }
+    catalogoData = (await (await fetch("output/catalogo.json")).json()).novelas || [];
+    try { noticiasData = (await (await fetch("output/noticias.json")).json()).noticias || []; } catch { noticiasData = []; }
+    cambiarTab(obtenerBibliotecaSlugs().length === 0 && catalogoData.length > 0 ? "explore" : "library");
   } catch {
-    document.getElementById("library-grid").innerHTML =
-      `<p>No se pudo cargar <code>output/catalogo.json</code>. Ejecuta <code>python generar_catalogo.py</code>.</p>`;
+    document.getElementById("library-grid").innerHTML = `<div class="kaomoji-empty"><div class="kaomoji-face">(×_×)</div><div class="kaomoji-text">Error cargando catalogo.json</div></div>`;
   }
 }
 
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js").catch(() => {});
-}
-
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 iniciarApp();
