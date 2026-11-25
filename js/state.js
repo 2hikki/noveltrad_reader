@@ -1,3 +1,14 @@
+
+const TEMAS_MECENAS = ["sakura", "eink", "antique", "cyber"];
+const FUENTES_MECENAS = ["Literata", "Crimson Pro", "Atkinson Hyperlegible"];
+
+function esFuncionMecenasBloqueada(valor) {
+  if (window.esMecenas) return false;
+  if (TEMAS_MECENAS.includes(valor)) return true;
+  if (typeof valor === "string" && FUENTES_MECENAS.some(f => valor.includes(f))) return true;
+  return false;
+}
+
 let catalogoData = [];
 let noticiasData = [];
 let tabAnterior = "library";
@@ -77,6 +88,14 @@ function obtenerTemaGiscus() {
 }
 
 function aplicarPreferencias() {
+  if (esFuncionMecenasBloqueada(prefs.theme)) {
+    prefs.theme = "dark";
+    localStorage.setItem("nt_prefs", JSON.stringify(prefs));
+  }
+  if (esFuncionMecenasBloqueada(prefs.font)) {
+    prefs.font = "system-ui, -apple-system, sans-serif";
+    localStorage.setItem("nt_prefs", JSON.stringify(prefs));
+  }
   document.documentElement.setAttribute("data-theme", prefs.theme);
   if (prefs.theme === "custom" && prefs.customBg) {
     aplicarFondoCustomRGB(prefs.customBg);
@@ -125,3 +144,15 @@ document.getElementById("custom-bg-picker").addEventListener("input", (e) => {
   prefs.customBg = e.target.value;
   aplicarPreferencias();
 });
+
+
+document.addEventListener("click", (e) => {
+  const btnTheme = e.target.closest("[data-theme-val]");
+  if (!btnTheme) return;
+  const val = btnTheme.dataset.themeVal;
+  if (TEMAS_MECENAS.includes(val) && !window.esMecenas) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    if (typeof abrirModalDonaciones === "function") abrirModalDonaciones();
+  }
+}, true);
