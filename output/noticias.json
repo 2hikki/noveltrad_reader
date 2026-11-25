@@ -1,5 +1,12 @@
 [
   {
+    "etiqueta": "Aviso",
+    "titulo": "Casi termino la fase preliminar",
+    "contenido": "El proyecto ya solo está terminando de pulirse, a partir de este punto, son solo cosas esteticas y pequeñas actualizaciones que iré añadiendo\n(Esta segunda linea es para probar los párrafos de esta sección)\n(Esta tercera lo mismo)",
+    "fecha": "12:06",
+    "timestamp": 1795630003564
+  },
+  {
     "etiqueta": "Prueba de función",
     "titulo": "Prueba",
     "contenido": "Quisiera probar esta nueva funcionalidad`n`junto al salto de línea, no lo sé,`n`",
