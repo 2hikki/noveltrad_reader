@@ -305,8 +305,7 @@ async function renderizarActualizaciones() {
         const card = document.createElement("div");
         card.className = "feed-item news-card";
         card.style.cssText = "flex-direction:column; align-items:flex-start; gap:0.4rem; border-left:3px solid var(--accent);";
-        const parrafos = (n.contenido || "").split("
-").filter(Boolean).map(p => `<p style="margin:0; font-size:0.86rem; color:var(--text); line-height:1.45;">${p}</p>`).join("");
+        const parrafos = (n.contenido || "").split("\n").filter(Boolean).map(p => `<p style="margin:0; font-size:0.86rem; color:var(--text); line-height:1.45;">${p}</p>`).join("");
         card.innerHTML = `
           <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
             <span style="background:var(--surface-high); color:var(--accent); font-size:0.72rem; font-weight:700; padding:0.15rem 0.55rem; border-radius:999px;">${n.etiqueta || "Anuncio"}</span>
