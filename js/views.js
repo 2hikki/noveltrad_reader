@@ -290,38 +290,63 @@ function renderizarExplorar() {
 // ==========================================
 // 5. ACTUALIZACIONES, HISTORIAL Y ESTADÍSTICAS
 // ==========================================
-function renderizarActualizaciones() {
+async function renderizarActualizaciones() {
   const feed = document.getElementById("updates-feed");
-  let html = "";
+  if (!feed) return;
+  feed.innerHTML = "";
 
-  noticiasData.forEach(noticia => {
-    html += `
-      <div class="feed-item news-item">
-        <span class="feed-badge">${noticia.tipo || "Anuncio"} • ${noticia.fecha}</span>
-        <strong style="font-size:1rem; margin-top:0.25rem;">${noticia.titulo}</strong>
-        <p style="color:var(--muted); font-size:0.88rem; margin-top:0.25rem;">${noticia.contenido}</p>
-      </div>
-    `;
+  // 1. Cargar anuncios/noticias desde output/noticias.json
+  try {
+    const res = await fetch(`output/noticias.json?t=${Date.now()}`);
+    if (res.ok) {
+      const raw = await res.json();
+      const noticias = Array.isArray(raw) ? raw : (raw.noticias || []);
+      noticias.forEach(n => {
+        const card = document.createElement("div");
+        card.className = "feed-item news-card";
+        card.style.cssText = "flex-direction:column; align-items:flex-start; gap:0.4rem; border-left:3px solid var(--accent);";
+        const parrafos = (n.contenido || "").split("
+").filter(Boolean).map(p => `<p style="margin:0; font-size:0.86rem; color:var(--text); line-height:1.45;">${p}</p>`).join("");
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+            <span style="background:var(--surface-high); color:var(--accent); font-size:0.72rem; font-weight:700; padding:0.15rem 0.55rem; border-radius:999px;">${n.etiqueta || "Anuncio"}</span>
+            <span style="font-size:0.75rem; color:var(--muted);">${n.fecha || ""}</span>
+          </div>
+          <strong style="font-size:0.98rem; color:var(--text); margin-top:0.15rem;">${n.titulo || ""}</strong>
+          ${parrafos}
+        `;
+        feed.appendChild(card);
+      });
+    }
+  } catch (e) {}
+
+  // 2. Volúmenes recientes del catálogo
+  const items = [];
+  catalogoData.forEach(nov => {
+    (nov.volumenes || []).forEach(vol => {
+      items.push({ nov, vol });
+    });
   });
 
-  const subidas = [];
-  catalogoData.forEach(novela => novela.volumenes.forEach(vol => subidas.push({ novela, vol, fecha: vol.fecha_subida || "" })));
-  subidas.sort((a, b) => b.fecha.localeCompare(a.fecha));
-
-  subidas.forEach(item => {
-    html += `
-      <div class="feed-item">
-        <div>
-          <span class="feed-badge">Nuevo Volumen</span>
-          <div style="font-weight:600; margin-top:0.2rem;">${item.novela.titulo_es} — Vol. ${item.vol.numero}</div>
-          <div class="feed-meta">${item.vol.total_capitulos} capítulos • ${item.fecha}</div>
-        </div>
-        <button class="m3-btn tonal" onclick="abrirNovelaPorSlug('${item.novela.slug}')">Abrir</button>
+  items.slice().reverse().forEach(({ nov, vol }) => {
+    const card = document.createElement("div");
+    card.className = "feed-item";
+    card.style.cursor = "pointer";
+    card.innerHTML = `
+      <img src="${nov.portada}" alt="" style="width:46px; height:66px; object-fit:cover; border-radius:8px;" />
+      <div style="flex:1;">
+        <div style="font-weight:600; font-size:0.92rem;">${nov.titulo_es}</div>
+        <div style="font-size:0.82rem; color:var(--muted);">Volumen ${vol.numero}${vol.titulo ? " • " + vol.titulo : ""}</div>
       </div>
+      <span style="color:var(--accent); font-size:0.8rem; font-weight:600;">Leer</span>
     `;
+    card.onclick = () => abrirNovela(nov);
+    feed.appendChild(card);
   });
 
-  feed.innerHTML = html || `<div class="kaomoji-empty"><div class="empty-state-art"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div><div class="kaomoji-text">Sin actualizaciones recientes</div></div>`;
+  if (!feed.children.length) {
+    feed.innerHTML = `<div class="kaomoji-empty"><div class="empty-state-art"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div><div class="kaomoji-text">Sin actualizaciones recientes</div></div>`;
+  }
 }
 
 function abrirNovelaPorSlug(slug) {

@@ -1,4 +1,4 @@
-const CACHE_NAME = "novelatrad-v12";
+const CACHE_NAME = "novelatrad-v13";
 const OFFLINE_VOLS_CACHE = "novelatrad-offline-vols";
 const ASSETS = [
   "./",
