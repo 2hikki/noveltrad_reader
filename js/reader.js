@@ -2,6 +2,17 @@
 // 7. LECTOR, COMENTARIOS GISCUS Y CITAS
 // ==========================================
 
+
+function construirUrlVolumen(vol, archivoRelativo) {
+  const limpio = String(archivoRelativo || "").replace(/^\.?\//, "");
+  if (/^https?:\/\//i.test(limpio)) return limpio;
+  if (vol && typeof vol.ruta_indice === "string" && /^https?:\/\//i.test(vol.ruta_indice)) {
+    const base = vol.ruta_indice.replace(/[^/\\]+$/, "");
+    return `${base}${limpio}`;
+  }
+  return limpio;
+}
+
 function resolverUrlRemota(vol, relPath) {
   const clean = String(relPath || "").replace(/^\.?\//, "");
   if (/^https?:\/\//i.test(clean)) return clean;
@@ -108,7 +119,7 @@ function cargarComentariosCapitulo(identificadorHilo) {
 async function abrirCapitulo(novela, vol, listaCapitulos, idx, scrollRestaurar = 0) {
   estadoActual = { novela, volumen: vol, capitulosIndice: listaCapitulos, capIndex: idx };
   const capInfo = listaCapitulos[idx];
-  const capData = await (await fetch(`${(typeof vol !== 'undefined' && vol && typeof vol.ruta_indice === 'string' && /^https?:\/\//i.test(vol.ruta_indice)) ? vol.ruta_indice.replace(/[^/\\]+$/, '') + capInfo.archivo : `${(typeof vol !== 'undefined' && vol && typeof vol.ruta_indice === 'string' && /^https?:\/\//i.test(vol.ruta_indice)) ? vol.ruta_indice.replace(/[^/\\]+$/, '') + capInfo.archivo : `output/novelas/${novela.slug}/${vol.clave}/${capInfo.archivo}`}`}`)).json();
+  const capData = await (await fetch(`${(typeof vol !== 'undefined' && vol && typeof vol.ruta_indice === 'string' && /^https?:\/\//i.test(vol.ruta_indice)) ? vol.ruta_indice.replace(/[^/\\]+$/, '') + capInfo.archivo : `${(typeof vol !== 'undefined' && vol && typeof vol.ruta_indice === 'string' && /^https?:\/\//i.test(vol.ruta_indice)) ? vol.ruta_indice.replace(/[^/\\]+$/, '') + capInfo.archivo : `${construirUrlVolumen(typeof vol !== 'undefined' ? vol : null, capInfo.archivo)}`}`}`)).json();
 
   if (!modoIncognito) {
     const progreso = JSON.parse(localStorage.getItem("nt_progreso") || "{}");

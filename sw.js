@@ -40,7 +40,7 @@ self.addEventListener("fetch", (e) => {
         return fetch(e.request)
           .then((res) => {
             const copia = res.clone();
-            caches.open(CACHE_NAME).then((cache) => ((e.request.method === 'GET' && !/firestore\.googleapis\.com|giscus\.app|identitytoolkit\.googleapis\.com|securetoken\.googleapis\.com/.test(e.request.url) && copia && copia.status === 200) ? ((e.request.method === 'GET' && !/firestore\.googleapis\.com|giscus\.app|identitytoolkit\.googleapis\.com|securetoken\.googleapis\.com/.test(e.request.url) && copia && copia.status === 200) ? cache.put(e.request, copia).catch(() => {}) : Promise.resolve()).catch(() => {}) : Promise.resolve()));
+            caches.open(CACHE_NAME).then((cache) => ((e.request.method === 'GET' && !/firestore\.googleapis\.com|giscus\.app|identitytoolkit\.googleapis\.com|securetoken\.googleapis\.com/.test(e.request.url) && copia && copia.status === 200) ? ((e.request.method === 'GET' && !/firestore\.googleapis\.com|giscus\.app|identitytoolkit\.googleapis\.com|securetoken\.googleapis\.com/.test(e.request.url) && copia && copia.status === 200) ? ((e.request.method === 'GET' && !/firestore\.googleapis\.com|giscus\.app|identitytoolkit\.googleapis\.com|securetoken\.googleapis\.com/.test(e.request.url) && copia && copia.status === 200) ? cache.put(e.request, copia).catch(() => {}) : Promise.resolve()).catch(() => {}) : Promise.resolve()).catch(() => {}) : Promise.resolve()));
             return res;
           })
           .catch(() => caches.match(e.request));
