@@ -7,21 +7,16 @@
       "sinopsis": "Freesia Salt es traicionada, despojada de su prometido y envenenada por su manipuladora hermana menor Kalmia, la Santa del reino. En sus momentos finales en un bosque lluvioso, Freesia descubre que es la reencarnación o poseedora del poder de la Bruja del Sol. Tras morir, retrocede dos años en el tiempo. Decidida a alejarse de su familia abusiva y romper su compromiso con Vute Sylphen (a quien cree enamorado de Kalmia), planea ingresar a la Academia Nacional Warden para obtener la beca de graduación e independizarse. Sin embargo, Vute también ha viajado en el tiempo tras encontrar el cuerpo de Freesia en el futuro. Profundamente enamorado de ella, renuncia a su puesto como vicecomandante de los Caballeros Reales y la sigue a la academia para protegerla, desencadenando una serie de malentendidos mientras Freesia intenta salvar a su amiga la princesa Olivia y construir una vida propia.",
       "tono": "Fantasía romántica con regresión temporal y drama aristocrático. La prosa equilibra la introspección emocional y el trauma de la protagonista frente a la traición con momentos de comedia ligera, equívocos románticos y superación personal.",
       "portada": "output/novelas/deja-vute-betrayal-begets-new-beginnings/vol-01/portada.jpg",
-      "ultima_actualizacion": "2026-11-24 18:51:31",
+      "ultima_actualizacion": "2026-11-25 13:16:41",
       "volumenes": [
         {
           "clave": "vol-01",
           "numero": 1,
           "total_capitulos": 27,
-          "fecha_subida": "2026-11-24 18:51:31",
+          "fecha_subida": "2026-11-25 13:16:41",
           "ruta_indice": "output/novelas/deja-vute-betrayal-begets-new-beginnings/vol-01/indice.json",
           "portada": "output/novelas/deja-vute-betrayal-begets-new-beginnings/vol-01/portada.jpg"
         }
-      ],
-      "etiquetas": [
-        "Fantasía",
-        "Drama",
-        "Regresión"
       ]
     },
     {
@@ -31,13 +26,13 @@
       "sinopsis": "Edición en español de La Amiga de la Infancia del Protagonista se Acerca a Mí. Un Personaje Secundario. [Kyuden Translations].",
       "tono": "Traducción importada",
       "portada": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-01/portada.jpg",
-      "ultima_actualizacion": "2026-11-24 20:33:19",
+      "ultima_actualizacion": "2026-11-25 13:19:15",
       "volumenes": [
         {
           "clave": "vol-01",
           "numero": 1,
           "total_capitulos": 22,
-          "fecha_subida": "2026-11-24 20:33:19",
+          "fecha_subida": "2026-11-25 13:19:14",
           "ruta_indice": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-01/indice.json",
           "portada": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-01/portada.jpg"
         },
@@ -45,7 +40,7 @@
           "clave": "vol-02",
           "numero": 2,
           "total_capitulos": 23,
-          "fecha_subida": "2026-11-24 20:33:19",
+          "fecha_subida": "2026-11-25 13:19:14",
           "ruta_indice": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-02/indice.json",
           "portada": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-02/portada.jpg"
         },
@@ -53,16 +48,10 @@
           "clave": "vol-03",
           "numero": 3,
           "total_capitulos": 29,
-          "fecha_subida": "2026-11-24 20:33:19",
+          "fecha_subida": "2026-11-25 13:19:15",
           "ruta_indice": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-03/indice.json",
           "portada": "output/novelas/la-amiga-de-la-infancia-del-protagonista-se-acerca-a-mi-un-personaje-secundario-kyuden-translations/vol-03/portada.jpg"
         }
-      ],
-      "etiquetas": [
-        "Comedia Romántica",
-        "Regresión",
-        "Drama",
-        "Traducción Importada"
       ]
     }
   ]
