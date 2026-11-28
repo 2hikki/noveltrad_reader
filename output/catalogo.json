@@ -2,12 +2,12 @@
   "novelas": [
     {
       "slug": "making-magic---the-sweet-life-of-a-witch-who-knows-an-infinite-mp-loophole",
-      "titulo_es": "Haciendo magia: La dulce vida de una bruja que conoce un truco de PM infinito (Volumen 1) ",
+      "titulo_es": "Haciendo magia: La dulce vida de una bruja que conoce un truco de PM infinito (Volumen 3)",
       "titulo_original": "Making Magic - The Sweet Life of a Witch Who Knows an Infinite MP Loophole",
-      "sinopsis": "Tras un prólogo ambientado quinientos años en el futuro donde la protagonista vive en paz en una mansión dentro del Bosque de la Bruja de la Creación junto a Teto y sus doncellas muñecas como Beretta, la historia retrocede al día de su reencarnación. Sin recordar su vida pasada ni su nombre, es invocada por la diosa Liriel, quien solo le pide vivir una vida larga, y elige la habilidad única Magia de Creación. Abandonada en un yermo desolado con apenas 50 PM y cuerpo de niña de doce años, descubre que puede fabricar frutas extrañas capaces de aumentar su PM máximo diariamente de forma indefinida. Adopta la clase Bruja, aprende Magia de Origen y crea a Teto, un gólem de arcilla que evoluciona a terranoide con apariencia de joven espadachina tras absorber el núcleo y el espíritu de una mazmorra. Al salir a la civilización, salvan al grupo de aventureros Halcones Jinetes del Viento, llegan al pueblo fronterizo de Darryl, donde Chise adopta su nombre, y suben rápidamente a rango D tras defender la puerta de diez ogros usando cristales de maná como proyectiles. Tras forjar una espada de acero mágico para Teto con dos hermanos enanos, viajan en carruaje a Ottoh y aceptan apoyar una aldea pionera en ruinas dirigida por Gash Gyaspar, séptimo hijo de un conde. Chise reorganiza la aldea, impone disciplina e higiene, aprende elaboración de pociones, siembra hojaburbujas para fabricar jabón y derrota en solitario a una hidra de agua de cinco cabezas con una guillotina creada con 100 000 PM. Al despedirse, Chise comprende que su enorme maná ralentizará su envejecimiento y decide viajar para encontrar o crear un hogar propio, poniendo rumbo hacia el Yermo de la Nada. Un capítulo extra treinta años después muestra la aldea convertida en el próspero Pueblo de Gash gracias al jabón, y el libro cierra con relatos breves sobre la convivencia cotidiana entre Chise y Teto.",
-      "tono": "Isekai de fantasía ligera y cotidiana (slice-of-life) con humor sutil, progresión estilo RPG, introspección serena de una protagonista madura en cuerpo de niña y momentos tiernos alternados con escenas de acción mágica.",
+      "sinopsis": "Tras recordar su pasado y la llegada de Selene en un capítulo introductorio, Chise y Teto viajan al reino de las bestias de Gald, donde Chise compra una alfombra voladora y ayuda a defender una caravana de una estampida de hormigas gigantes. Mientras gestionan la regeneración del Yermo de la Nada mediante árboles mundiales y dispositivos de barrera, Selene crece y comienza a interactuar con otros niños en la guardería. Posteriormente, un peligroso calabozo con temática de fuego y desierto amenaza el suministro de grano de Gald; Chise y Teto lo exploran durante dos semanas superando trampas de calor y monstruos de arena para derrotar al guardián y hacerse con el núcleo de calabozo, que Chise usa para negociar los derechos extraterritoriales del Yermo de la Nada con el príncipe Gyunton. Al cumplir once años, Selene celebra su cumpleaños y recibe una cámara mágica. Sin embargo, su verdadera identidad como la princesa Seleneriel de Ischea sale a luz cuando agentes del reino intentan contactarla; Chise, Teto y Selene viajan a la capital de Ischea escoltadas por diplomáticos. Chise se aloja en una catedral y enseña medicina avanzada a las monjas, mientras Teto y Chise superan el torneo de promoción a rango A. En la capital, Selene se reencuentra con su padre, el rey Alberd, y con su difunta madre, la santa Elize, a quien logran invocar brevemente mediante un cristal espiritual en el mausoleo real. Tras conectar la capital con el Yermo mediante una puerta de teletransporte, Chise y Teto aceptan un trabajo como guardias secretas para la fiesta de debut social de Selene. Durante la celebración, los restos de la secta de adoradores de demonios y el noble traidor marqués Ginius atacan con un archidemonio, que Chise logra purificar y sellar en una gema antes de destruirlo en un conversor de maná en el Yermo. Debido a los riesgos políticos que implica su poderosa Magia de Creación, Chise decide cortar la puerta de teletransporte y abandonar la capital junto a Teto por el bien de Selene. Seis años después, Chise y Teto observan desde la distancia la boda de Selene con el hijo del margrave Liebel, celebrando en silencio su felicidad.",
+      "tono": "Isekai de fantasía ligera y cotidiana (slice-of-life) con humor sutil, progresión estilo RPG, introspección serena de una protagonista madura en cuerpo de niña y momentos tiernos alternados con escenas de acción mágica y revelaciones políticas.",
       "portada": "output/novelas/making-magic---the-sweet-life-of-a-witch-who-knows-an-infinite-mp-loophole/vol-01/portada.jpg",
-      "ultima_actualizacion": "2026-11-25 17:54:15",
+      "ultima_actualizacion": "2026-11-27 18:51:58",
       "volumenes": [
         {
           "clave": "vol-01",
@@ -16,7 +16,28 @@
           "fecha_subida": "2026-11-25 17:54:15",
           "ruta_indice": "output/novelas/making-magic---the-sweet-life-of-a-witch-who-knows-an-infinite-mp-loophole/vol-01/indice.json",
           "portada": "output/novelas/making-magic---the-sweet-life-of-a-witch-who-knows-an-infinite-mp-loophole/vol-01/portada.jpg"
+        },
+        {
+          "clave": "vol-02",
+          "numero": 2,
+          "total_capitulos": 35,
+          "fecha_subida": "2026-11-27 18:46:05",
+          "ruta_indice": "output/novelas/making-magic---the-sweet-life-of-a-witch-who-knows-an-infinite-mp-loophole/vol-02/indice.json",
+          "portada": "output/novelas/making-magic---the-sweet-life-of-a-witch-who-knows-an-infinite-mp-loophole/vol-02/portada.jpg"
+        },
+        {
+          "clave": "vol-03",
+          "numero": 3,
+          "total_capitulos": 39,
+          "fecha_subida": "2026-11-27 18:51:58",
+          "ruta_indice": "output/novelas/making-magic---the-sweet-life-of-a-witch-who-knows-an-infinite-mp-loophole/vol-03/indice.json",
+          "portada": "output/novelas/making-magic---the-sweet-life-of-a-witch-who-knows-an-infinite-mp-loophole/vol-03/portada.jpg"
         }
+      ],
+      "etiquetas": [
+        "Fantasía",
+        "Isekai(?)",
+        "Girls Love"
       ]
     },
     {
@@ -56,7 +77,13 @@
           "repo_origen": "noveltrad-data-01"
         }
       ],
-      "repo_origen": "noveltrad-data-01"
+      "repo_origen": "noveltrad-data-01",
+      "etiquetas": [
+        "Comedia",
+        "Romance",
+        "Drama",
+        "Regresión"
+      ]
     }
   ]
 }
